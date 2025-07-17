@@ -8,6 +8,7 @@ on:
 
 jobs:
   frontend:
+    needs: [test]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -36,6 +37,7 @@ jobs:
           publish_dir: ./frontend/build
 
   backend:
+    needs: [test]
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -114,40 +116,40 @@ jobs:
 
       - name: Build and run all tests with Docker Compose
         run: |
-          docker-compose build
-          docker-compose up -d db
+          docker compose build
+          docker compose up -d db
           sleep 10 # Wait for DB to be ready
-          docker-compose run --rm backend-test
-          docker-compose run --rm frontend-test
-          docker-compose up -d backend frontend
+          docker compose run --rm backend-test
+          docker compose run --rm frontend-test
+          docker compose up -d backend frontend
           sleep 10 # Wait for backend/frontend to be ready
-          docker-compose run --rm frontend-e2e-test
-          docker-compose run --rm backend-api-test
+          docker compose run --rm frontend-e2e-test
+          docker compose run --rm backend-api-test
 
       - name: Copy backend test results
         run: |
           mkdir -p test-results/backend coverage/backend
-          docker cp $(docker-compose ps -q backend-test):/app/test-results/. test-results/backend/
-          docker cp $(docker-compose ps -q backend-test):/app/coverage/. coverage/backend/
+          docker cp $(docker compose ps -q backend-test):/app/test-results/. test-results/backend/
+          docker cp $(docker compose ps -q backend-test):/app/coverage/. coverage/backend/
         continue-on-error: true
 
       - name: Copy frontend test results
         run: |
           mkdir -p test-results/frontend coverage/frontend
-          docker cp $(docker-compose ps -q frontend-test):/app/test-results/. test-results/frontend/
-          docker cp $(docker-compose ps -q frontend-test):/app/coverage/. coverage/frontend/
+          docker cp $(docker compose ps -q frontend-test):/app/test-results/. test-results/frontend/
+          docker cp $(docker compose ps -q frontend-test):/app/coverage/. coverage/frontend/
         continue-on-error: true
 
       - name: Copy frontend E2E test results
         run: |
           mkdir -p test-results/frontend-e2e
-          docker cp $(docker-compose ps -q frontend-e2e-test):/app/test-results/. test-results/frontend-e2e/
+          docker cp $(docker compose ps -q frontend-e2e-test):/app/test-results/. test-results/frontend-e2e/
         continue-on-error: true
 
       - name: Copy backend API test results
         run: |
           mkdir -p test-results/backend-api
-          docker cp $(docker-compose ps -q backend-api-test):/app/test-results/. test-results/backend-api/
+          docker cp $(docker compose ps -q backend-api-test):/app/test-results/. test-results/backend-api/
         continue-on-error: true
 
       - name: Upload test results

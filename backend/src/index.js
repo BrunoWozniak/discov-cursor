@@ -8,7 +8,10 @@ app.use(express.json());
 
 // PostgreSQL connection setup
 const pool = process.env.DATABASE_URL
-  ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    })
   : new Pool({
       host: process.env.PGHOST || 'localhost',
       user: process.env.PGUSER || 'postgres',

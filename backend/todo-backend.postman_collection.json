@@ -17,10 +17,8 @@
           "raw": "{\n  \"title\": \"Test todo\"\n}"
         },
         "url": {
-          "raw": "http://localhost:4000/todos",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "4000",
+          "raw": "{{base_url}}/todos",
+          "host": ["{{base_url}}"],
           "path": ["todos"]
         }
       }
@@ -30,10 +28,8 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "http://localhost:4000/todos",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "4000",
+          "raw": "{{base_url}}/todos",
+          "host": ["{{base_url}}"],
           "path": ["todos"]
         }
       }
@@ -43,10 +39,26 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "http://localhost:4000/todos/1",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "4000",
+          "raw": "{{base_url}}/todos/1",
+          "host": ["{{base_url}}"],
+          "path": ["todos", "1"]
+        }
+      }
+    },
+    {
+      "name": "Patch Todo",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated title\",\n  \"completed\": true\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/todos/1",
+          "host": ["{{base_url}}"],
           "path": ["todos", "1"]
         }
       }
@@ -56,13 +68,17 @@
       "request": {
         "method": "DELETE",
         "url": {
-          "raw": "http://localhost:4000/todos/1",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "4000",
+          "raw": "{{base_url}}/todos/1",
+          "host": ["{{base_url}}"],
           "path": ["todos", "1"]
         }
       }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:4000"
     }
   ]
 } 

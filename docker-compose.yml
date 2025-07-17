@@ -27,6 +27,46 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
     depends_on:
       - db
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: test
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+    depends_on:
+      - db
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: test
+    environment:
+      - NODE_ENV=test
+    depends_on:
+      - backend
+  frontend-e2e-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: test-e2e
+    environment:
+      - NODE_ENV=test
+    depends_on:
+      - frontend
+      - backend
+  backend-api-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: test-api
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+    depends_on:
+      - db
+      - backend
   db:
     image: postgres:15
     restart: always

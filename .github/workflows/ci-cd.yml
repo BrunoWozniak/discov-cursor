@@ -24,10 +24,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: |
-          if [ -f package.json ] && grep -q '"test"' package.json; then npm test; else echo "No test script"; fi
-
       - name: Build
         run: |
           REACT_APP_API_URL=https://discov-cursor-backend.fly.dev npm run build
@@ -87,12 +83,89 @@ jobs:
       - name: Run migrations
         run: npx knex migrate:latest
 
-      - name: Run backend tests (optional)
-        run: |
-          if [ -f package.json ] && grep -q '"test"' package.json; then npm test; else echo "No test script"; fi 
-
       - name: Deploy to Fly.io
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }} 
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and run all tests with Docker Compose
+        run: |
+          docker-compose build
+          docker-compose up -d db
+          sleep 10 # Wait for DB to be ready
+          docker-compose run --rm backend-test
+          docker-compose run --rm frontend-test
+          docker-compose up -d backend frontend
+          sleep 10 # Wait for backend/frontend to be ready
+          docker-compose run --rm frontend-e2e-test
+          docker-compose run --rm backend-api-test
+
+      - name: Copy backend test results
+        run: |
+          mkdir -p test-results/backend coverage/backend
+          docker cp $(docker-compose ps -q backend-test):/app/test-results/. test-results/backend/
+          docker cp $(docker-compose ps -q backend-test):/app/coverage/. coverage/backend/
+        continue-on-error: true
+
+      - name: Copy frontend test results
+        run: |
+          mkdir -p test-results/frontend coverage/frontend
+          docker cp $(docker-compose ps -q frontend-test):/app/test-results/. test-results/frontend/
+          docker cp $(docker-compose ps -q frontend-test):/app/coverage/. coverage/frontend/
+        continue-on-error: true
+
+      - name: Copy frontend E2E test results
+        run: |
+          mkdir -p test-results/frontend-e2e
+          docker cp $(docker-compose ps -q frontend-e2e-test):/app/test-results/. test-results/frontend-e2e/
+        continue-on-error: true
+
+      - name: Copy backend API test results
+        run: |
+          mkdir -p test-results/backend-api
+          docker cp $(docker-compose ps -q backend-api-test):/app/test-results/. test-results/backend-api/
+        continue-on-error: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: All Tests
+          path: test-results/**/*.xml
+          reporter: jest-junit 

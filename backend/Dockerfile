@@ -2,5 +2,22 @@ FROM node:18
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --include=dev knex pg
+RUN npm install --include=dev jest supertest
+RUN npm install --include=dev newman
+RUN npm install --include=dev jest-junit
 COPY . .
 CMD ["npm", "run", "dev"] 
+# --- Test stage ---
+FROM node:18 AS test
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --include=dev knex pg jest supertest
+COPY . .
+CMD ["npm", "test"] 
+# --- API Test stage ---
+FROM node:18 AS test-api
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --include=dev knex pg jest supertest newman
+COPY . .
+CMD ["npm", "run", "test:api"] 

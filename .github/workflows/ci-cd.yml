@@ -83,3 +83,12 @@ jobs:
       - name: Run backend tests (optional)
         run: |
           if [ -f package.json ] && grep -q '"test"' package.json; then npm test; else echo "No test script"; fi 
+
+      - name: Deploy to Fly.io
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: superfly/flyctl-actions@1.4
+        with:
+          args: "deploy --remote-only"
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          FLY_APP_NAME: discov-cursor-backend 

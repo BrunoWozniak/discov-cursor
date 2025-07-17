@@ -86,6 +86,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Remove old frontend images to guarantee clean build
+        run: |
+          docker rmi discov-cursor-frontend || true
+          docker rmi discov-cursor-frontend:latest || true
+          docker rmi discov-cursor-frontend-e2e || true
       - name: Build and run all tests with Docker Compose
         run: |
           docker compose build --no-cache

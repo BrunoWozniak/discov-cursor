@@ -51,6 +51,7 @@ services:
     depends_on:
       - backend
   frontend-e2e-test:
+    image: discov-cursor-frontend-e2e
     build:
       context: ./frontend
       dockerfile: Dockerfile

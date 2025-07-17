@@ -53,9 +53,11 @@ docker-compose up --build -d
 
 ---
 
-## Production/Build
-- The same Docker Compose setup can be used for production with appropriate environment variables and volumes.
-- For CI/CD and deployment, see future updates or add your own GitHub Actions workflow.
+## Production/Build & Deployment
+- **Frontend:** Deployed to GitHub Pages via CI/CD workflow. Set your custom domain in `.github/workflows/ci-cd.yml` and your repo's Pages settings.
+- **Backend:** Deployed to [Render](https://render.com/) as a Docker service. Connect your GitHub repo to Render and follow their dashboard to set up the backend and managed Postgres database. Set environment variables in the Render dashboard (see `.env.example`).
+- **Database:** Use Render's managed Postgres add-on. Copy connection details to your backend's environment variables in Render.
+- For CI/CD and deployment, see `.github/workflows/ci-cd.yml` and Render's documentation.
 
 ---
 

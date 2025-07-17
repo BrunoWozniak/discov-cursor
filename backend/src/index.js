@@ -107,6 +107,7 @@ app.get('/', (req, res) => {
   res.send('Hello from Express backend!');
 });
 
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Backend listening on port ${PORT}`);
-}); 
+});

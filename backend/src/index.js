@@ -7,13 +7,15 @@ const PORT = process.env.PORT || 4000;
 app.use(express.json());
 
 // PostgreSQL connection setup
-const pool = new Pool({
-  host: process.env.PGHOST || 'localhost',
-  user: process.env.PGUSER || 'postgres',
-  password: process.env.PGPASSWORD || 'postgres',
-  database: process.env.PGDATABASE || 'postgres',
-  port: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
-});
+const pool = process.env.DATABASE_URL
+  ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
+  : new Pool({
+      host: process.env.PGHOST || 'localhost',
+      user: process.env.PGUSER || 'postgres',
+      password: process.env.PGPASSWORD || 'postgres',
+      database: process.env.PGDATABASE || 'postgres',
+      port: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
+    });
 
 // Handle CORS properly
 const cors = require('cors');

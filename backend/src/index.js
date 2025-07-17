@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 app.use(express.json());
 
@@ -17,7 +17,14 @@ const pool = new Pool({
 
 // Handle CORS properly
 const cors = require('cors');
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://brunowozniak.github.io",
+  "https://brunowozniak.github.io/discov-cursor"
+];
+app.use(cors({
+  origin: allowedOrigins
+}));
 
 // Create a new todo
 app.post('/todos', async (req, res) => {

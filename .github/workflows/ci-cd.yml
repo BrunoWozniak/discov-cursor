@@ -29,7 +29,8 @@ jobs:
           if [ -f package.json ] && grep -q '"test"' package.json; then npm test; else echo "No test script"; fi
 
       - name: Build
-        run: npm run build
+        run: |
+          REACT_APP_API_URL=https://discov-cursor-backend.onrender.com npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

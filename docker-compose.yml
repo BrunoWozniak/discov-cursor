@@ -13,6 +13,11 @@ services:
       - CHOKIDAR_USEPOLLING=true
     depends_on:
       - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
   backend:
     build:
       context: ./backend

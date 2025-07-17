@@ -19,11 +19,21 @@ const pool = new Pool({
 const cors = require('cors');
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://brunowozniak.github.io",
-  "https://brunowozniak.github.io/discov-cursor"
+  "https://brunowozniak.github.io"
 ];
 app.use(cors({
-  origin: allowedOrigins
+  origin: function(origin, callback) {
+    // allow requests with no origin (like mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 }));
 
 // Create a new todo

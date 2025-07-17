@@ -22,4 +22,5 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --include=dev wait-on
 COPY . .
-CMD ["sh", "-c", "npx wait-on http://frontend:3000 && npm run test:e2e"] 
+RUN chmod +x run-e2e.sh
+CMD ["./run-e2e.sh"] 

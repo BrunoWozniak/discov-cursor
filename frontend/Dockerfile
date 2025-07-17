@@ -10,13 +10,13 @@ CMD ["npm", "start"]
 FROM node:18 AS test
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --include=dev @testing-library/react @testing-library/jest-dom jest
+RUN npm install --include=dev @testing-library/react @testing-library/jest-dom jest jest-junit
 COPY . .
 CMD ["npm", "test"]
 # --- E2E Test stage ---
 FROM node:18 AS test-e2e
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --include=dev @testing-library/react @testing-library/jest-dom jest cypress
+RUN npm install --include=dev @testing-library/react @testing-library/jest-dom jest cypress jest-junit
 COPY . .
 CMD ["npm", "run", "test:e2e"] 

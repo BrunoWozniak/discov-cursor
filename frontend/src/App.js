@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 
 // API base URL, configurable via environment variable
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://backend:4000';
+const API_BASE = process.env.REACT_APP_API_URL || 'http://backend:4000';
 
 function App() {
   // State hooks for todos, input, loading, error, dark mode, editing, and modal

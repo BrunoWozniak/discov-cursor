@@ -61,7 +61,7 @@ jobs:
       PGPASSWORD: postgres
       PGDATABASE: postgres
       PGPORT: 5432
-      NODE_ENV: test
+      NODE_ENV: development
     defaults:
       run:
         working-directory: ./backend

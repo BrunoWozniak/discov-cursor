@@ -30,7 +30,7 @@ jobs:
 
       - name: Build
         run: |
-          REACT_APP_API_URL=https://discov-cursor-backend.onrender.com npm run build
+          REACT_APP_API_URL=https://discov-cursor-backend.fly.dev npm run build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -89,6 +89,6 @@ jobs:
         uses: superfly/flyctl-actions@1.4
         with:
           args: "deploy --remote-only"
+          working-directory: ./backend
         env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-          FLY_APP_NAME: discov-cursor-backend 
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }} 

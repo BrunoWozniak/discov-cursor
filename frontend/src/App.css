@@ -1,0 +1,382 @@
+.top-bar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 18px 24px 0 0;
+  box-sizing: border-box;
+  gap: 10px;
+}
+
+.toggle-text {
+  font-size: 1rem;
+  color: #222;
+  margin-right: 8px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color 0.3s;
+}
+.app-container.dark .toggle-text {
+  color: #fff;
+}
+
+body, html {
+  font-family: 'Inter', 'Roboto', Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f7f7f7;
+  transition: background 0.3s;
+}
+
+body.dark-mode {
+  background: #18191a;
+}
+
+body.light-mode {
+  background: #f7f7f7;
+}
+
+.app-container {
+  min-height: 100vh;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 10px 40px 10px;
+  transition: background 0.3s;
+}
+
+.app-container.dark {
+  background: transparent;
+}
+
+.neumorphic-title {
+  color: #18191a;
+  font-size: 2.5rem;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 0 #fff, 2px 2px 8px #e0e0e0;
+  font-family: inherit;
+  transition: color 0.3s;
+}
+
+.app-container.dark .neumorphic-title {
+  color: #fff;
+  text-shadow: 1px 1px 0 #222, 2px 2px 8px #222;
+}
+
+.neumorphic-toggle {
+  width: 54px;
+  height: 30px;
+  border-radius: 12px;
+  background: #f7f7f7;
+  box-shadow:  4px 4px 12px #b0b0b0, -4px -4px 12px #fff;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.neumorphic-toggle.toggled {
+  background: #23272f;
+  box-shadow:  4px 4px 12px #000, -4px -4px 12px #23272f;
+}
+
+.toggle-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 2px 2px 6px #b0b0b0, -2px -2px 6px #fff;
+  position: absolute;
+  left: 6px;
+  top: 5px;
+  transition: left 0.3s, background 0.3s, box-shadow 0.3s;
+}
+
+.neumorphic-toggle.toggled .toggle-thumb {
+  left: 26px;
+  background: #23272f;
+  box-shadow: 2px 2px 6px #000, -2px -2px 6px #23272f;
+}
+
+.neumorphic-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.neumorphic-input {
+  padding: 14px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #fff;
+  box-shadow: inset 2px 2px 6px #b0b0b0, inset -2px -2px 6px #fff;
+  font-size: 1rem;
+  color: #222;
+  outline: none;
+  transition: box-shadow 0.2s, background 0.3s, color 0.3s;
+}
+
+.neumorphic-input:focus {
+  box-shadow: inset 1px 1px 4px #b0b0b0, inset -1px -1px 4px #fff;
+}
+
+.app-container.dark .neumorphic-input {
+  background: #23272f;
+  color: #fff;
+  box-shadow: inset 2px 2px 6px #000, inset -2px -2px 6px #23272f;
+}
+
+.neumorphic-btn {
+  padding: 14px 28px;
+  border-radius: 8px;
+  border: none;
+  background: #f7f7f7;
+  box-shadow:  4px 4px 16px #b0b0b0, -4px -4px 16px #fff;
+  font-size: 1rem;
+  color: #222;
+  cursor: pointer;
+  font-weight: 600;
+  transition: box-shadow 0.2s, background 0.3s, color 0.3s;
+}
+
+.neumorphic-btn:active {
+  box-shadow:  2px 2px 8px #b0b0b0, -2px -2px 8px #fff;
+}
+
+.app-container.dark .neumorphic-btn {
+  background: #23272f;
+  color: #fff;
+  box-shadow:  4px 4px 16px #000, -4px -4px 16px #23272f;
+}
+
+.neumorphic-btn.delete {
+  padding: 10px 18px;
+  color: #fff;
+  background: #e74c3c;
+  box-shadow:  2px 2px 8px #b0b0b0, -2px -2px 8px #fff;
+  margin-left: 16px;
+  font-weight: 700;
+}
+
+.app-container.dark .neumorphic-btn.delete {
+  background: #c0392b;
+  box-shadow:  2px 2px 8px #000, -2px -2px 8px #23272f;
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  max-width: 420px;
+}
+
+.neumorphic-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow:  8px 8px 24px #b0b0b0, -8px -8px 24px #fff;
+  margin-bottom: 18px;
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  transition: box-shadow 0.2s, background 0.3s, color 0.3s;
+}
+
+.app-container.dark .neumorphic-card {
+  background: #23272f;
+  box-shadow:  8px 8px 24px #000, -8px -8px 24px #23272f;
+  color: #fff;
+}
+
+.todo-item.completed .todo-title {
+  text-decoration: line-through;
+  color: #aaa;
+  opacity: 0.7;
+}
+
+.app-container.dark .todo-item.completed .todo-title {
+  color: #555;
+}
+
+.todo-title {
+  flex: 1;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+
+.neumorphic-card.error {
+  color: #fff;
+  background: #b00020;
+  box-shadow:  4px 4px 12px #b0b0b0, -4px -4px 12px #fff;
+  text-align: center;
+}
+
+.app-container.dark .neumorphic-card.error {
+  background: #b00020;
+  box-shadow:  4px 4px 12px #000, -4px -4px 12px #23272f;
+} 
+
+.edit-title-input {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #fff;
+  box-shadow: inset 2px 2px 6px #b0b0b0, inset -2px -2px 6px #fff;
+  font-size: 1rem;
+  color: #222;
+  outline: none;
+  margin-right: 8px;
+  transition: box-shadow 0.2s, background 0.3s, color 0.3s;
+}
+.app-container.dark .edit-title-input {
+  background: #23272f;
+  color: #fff;
+  box-shadow: inset 2px 2px 6px #000, inset -2px -2px 6px #23272f;
+} 
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  min-width: 320px;
+  max-width: 90vw;
+  padding: 32px 24px 24px 24px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow:  8px 8px 24px #b0b0b0, -8px -8px 24px #fff;
+  color: #222;
+  font-size: 1.1rem;
+  text-align: left;
+  position: relative;
+  transition: box-shadow 0.2s, background 0.3s, color 0.3s;
+}
+.app-container.dark .modal {
+  background: #23272f;
+  color: #fff;
+  box-shadow:  8px 8px 24px #000, -8px -8px 24px #23272f;
+} 
+
+.todo-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
+.todo-checkbox {
+  margin-right: 8px;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  accent-color: #222;
+}
+.app-container.dark .todo-checkbox {
+  accent-color: #fff;
+}
+
+.todo-title-text {
+  flex: 1;
+  word-break: break-word;
+  white-space: pre-line;
+  font-size: 1.08rem;
+  min-width: 0;
+  line-height: 1.4;
+  display: block;
+}
+
+.edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.edit-title-input {
+  flex: 1;
+  min-width: 0;
+  margin-right: 0;
+  box-shadow: inset 2px 2px 6px #b0b0b0, inset -2px -2px 6px #fff;
+  font-family: inherit;
+  line-height: 1.4;
+  resize: none;
+  min-height: 40px;
+  height: auto;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.app-container.dark .edit-title-input {
+  box-shadow: inset 2px 2px 6px #000, inset -2px -2px 6px #23272f;
+} 
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  background: #f7f7f7;
+  color: #222;
+  box-shadow: 1px 1px 3px #b0b0b0, -1px -1px 3px #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+.icon-btn:hover {
+  box-shadow: 1px 1px 2px #b0b0b0, -1px -1px 2px #fff;
+}
+.icon-btn:active {
+  box-shadow: inset 1px 1px 2px #b0b0b0, inset -1px -1px 2px #fff;
+}
+.icon-btn.confirm {
+  color: #000;
+}
+.icon-btn.cancel {
+  color: #888;
+}
+.icon-btn.delete {
+  color: #e74c3c;
+}
+.icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.app-container.dark .icon-btn {
+  background: #23272f;
+  color: #fff;
+  box-shadow: 1px 1px 3px #000, -1px -1px 3px #23272f;
+}
+.app-container.dark .icon-btn:hover {
+  box-shadow: 1px 1px 2px #000, -1px -1px 2px #23272f;
+}
+.app-container.dark .icon-btn.confirm {
+  color: #fff;
+}
+.app-container.dark .icon-btn.cancel {
+  color: #ccc;
+}
+.app-container.dark .icon-btn.delete {
+  color: #e74c3c;
+} 

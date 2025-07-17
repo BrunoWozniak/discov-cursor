@@ -1,0 +1,10 @@
+{
+  "name": "Backend DevContainer",
+  "dockerComposeFile": [
+    "../../docker-compose.yml"
+  ],
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "forwardPorts": [3000, 4000, 5432],
+  "postCreateCommand": "npm install"
+} 

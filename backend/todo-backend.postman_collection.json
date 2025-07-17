@@ -1,0 +1,68 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Todo Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Todo",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Test todo\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:4000/todos",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["todos"]
+        }
+      }
+    },
+    {
+      "name": "Get All Todos",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:4000/todos",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["todos"]
+        }
+      }
+    },
+    {
+      "name": "Get One Todo",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:4000/todos/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["todos", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Todo",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:4000/todos/1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "4000",
+          "path": ["todos", "1"]
+        }
+      }
+    }
+  ]
+} 

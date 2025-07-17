@@ -1,0 +1,10 @@
+{
+  "name": "Frontend DevContainer",
+  "dockerComposeFile": [
+    "../../docker-compose.yml"
+  ],
+  "service": "frontend",
+  "workspaceFolder": "/app",
+  "forwardPorts": [3000, 4000, 5432],
+  "postCreateCommand": "cd /app && npm install"
+} 

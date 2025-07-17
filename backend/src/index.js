@@ -36,6 +36,8 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 
+app.options('*', cors());
+
 // Create a new todo
 app.post('/todos', async (req, res) => {
   const { title, completed = false } = req.body;

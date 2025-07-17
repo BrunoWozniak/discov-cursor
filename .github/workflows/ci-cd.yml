@@ -90,14 +90,31 @@ jobs:
         run: |
           docker compose build
           docker compose up -d db
-          sleep 10 # Wait for DB to be ready
           docker compose run --rm backend-test
           docker compose run --rm frontend-test
           docker compose up -d backend frontend
           echo 'Waiting for frontend container to be healthy...'
-          until [ "$(docker inspect -f '{{.State.Health.Status}}' $(docker compose ps -q frontend))" = "healthy" ]; do
-            echo 'Still waiting for frontend...'; sleep 2;
+          ATTEMPTS=0
+          MAX_ATTEMPTS=60
+          while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
+            CID=$(docker compose ps -q frontend)
+            if [ -n "$CID" ] && [ "$(docker inspect -f '{{.State.Health.Status}}' $CID)" = "healthy" ]; then
+              echo 'Frontend is healthy!'; break;
+            fi
+            echo 'Still waiting for frontend...';
+            sleep 2;
+            ATTEMPTS=$((ATTEMPTS+1))
           done
+          if [ $ATTEMPTS -eq $MAX_ATTEMPTS ]; then
+            echo 'Frontend did not become healthy in time. Printing diagnostics:'
+            docker compose ps -a
+            docker compose logs frontend
+            CID=$(docker compose ps -q frontend)
+            if [ -n "$CID" ]; then
+              docker inspect $CID
+            fi
+            exit 1
+          fi
           docker compose run --rm frontend-e2e-test
           docker compose run --rm backend-api-test
 

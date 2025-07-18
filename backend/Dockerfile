@@ -7,7 +7,7 @@ RUN npm install --include=dev newman
 RUN npm install --include=dev jest-junit
 RUN mkdir -p /app/test-results /app/coverage
 COPY . .
-CMD ["npm", "run", "dev"] 
+CMD ["npm", "start"] 
 # --- Test stage ---
 FROM node:18 AS test
 WORKDIR /app

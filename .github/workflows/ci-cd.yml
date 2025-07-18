@@ -95,10 +95,40 @@ jobs:
         run: |
           docker compose build --no-cache
           docker compose up -d db
+
+          # 1. Backend unit/integration tests
           docker compose run --rm backend-test
+
+          # 2. Backend API contract tests
+          docker compose up -d backend
+          ATTEMPTS=0
+          MAX_ATTEMPTS=60
+          while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
+            CID=$(docker compose ps -q backend)
+            if [ -n "$CID" ] && [ "$(docker inspect -f '{{.State.Health.Status}}' $CID)" = "healthy" ]; then
+              echo 'Backend is healthy!'; break;
+            fi
+            echo 'Still waiting for backend...';
+            sleep 2;
+            ATTEMPTS=$((ATTEMPTS+1))
+          done
+          if [ $ATTEMPTS -eq $MAX_ATTEMPTS ]; then
+            echo 'Backend did not become healthy in time. Printing diagnostics:'
+            docker compose ps -a
+            docker compose logs backend
+            CID=$(docker compose ps -q backend)
+            if [ -n "$CID" ]; then
+              docker inspect $CID
+            fi
+            exit 1
+          fi
+          docker compose run --rm backend-api-test
+
+          # 3. Frontend unit/component tests
           docker compose run --rm frontend-test
-          docker compose up -d backend frontend
-          echo 'Waiting for frontend container to be healthy...'
+
+          # 4. Frontend up + E2E tests
+          docker compose up -d frontend
           ATTEMPTS=0
           MAX_ATTEMPTS=60
           while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
@@ -121,8 +151,6 @@ jobs:
             exit 1
           fi
           docker compose run --rm frontend-e2e-test
-          docker compose up -d backend
-          docker compose run --rm backend-api-test
 
       - name: Copy backend test results
         run: |

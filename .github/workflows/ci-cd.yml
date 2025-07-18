@@ -202,6 +202,19 @@ jobs:
           docker cp $CONTAINER_ID:/app/test-results/. test-results/frontend-e2e/ || true
         continue-on-error: true
 
+      - name: List test-results directory
+        run: |
+          echo 'Contents of test-results:'
+          ls -l test-results || true
+          echo 'Contents of test-results/backend:'
+          ls -l test-results/backend || true
+          echo 'Contents of test-results/backend-api:'
+          ls -l test-results/backend-api || true
+          echo 'Contents of test-results/frontend:'
+          ls -l test-results/frontend || true
+          echo 'Contents of test-results/frontend-e2e:'
+          ls -l test-results/frontend-e2e || true
+
       - name: Cleanup test containers
         run: |
           docker compose down -v || true

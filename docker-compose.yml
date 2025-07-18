@@ -23,6 +23,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: app
     volumes:
       - ./backend:/app
       - backend_node_modules:/app/node_modules

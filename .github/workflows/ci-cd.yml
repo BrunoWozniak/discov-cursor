@@ -102,10 +102,10 @@ jobs:
           docker compose up -d db
 
           # 1. Backend unit/integration tests
-          docker compose run --rm backend-test
+          docker compose run backend-test
 
           # 2. Backend API contract tests
-          docker compose up -d backend
+          docker compose run backend-api-test
 
           set -x
 
@@ -172,35 +172,11 @@ jobs:
             docker compose exec backend node -v || true
           fi
 
-          docker compose run --rm backend-api-test
-
           # 3. Frontend unit/component tests
-          docker compose run --rm frontend-test
+          docker compose run frontend-test
 
           # 4. Frontend up + E2E tests
-          docker compose up -d frontend
-          ATTEMPTS=0
-          MAX_ATTEMPTS=60
-          while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
-            CID=$(docker compose ps -q frontend)
-            if [ -n "$CID" ] && [ "$(docker inspect -f '{{.State.Health.Status}}' $CID)" = "healthy" ]; then
-              echo 'Frontend is healthy!'; break;
-            fi
-            echo 'Still waiting for frontend...';
-            sleep 2;
-            ATTEMPTS=$((ATTEMPTS+1))
-          done
-          if [ $ATTEMPTS -eq $MAX_ATTEMPTS ]; then
-            echo 'Frontend did not become healthy in time. Printing diagnostics:'
-            docker compose ps -a
-            docker compose logs frontend
-            CID=$(docker compose ps -q frontend)
-            if [ -n "$CID" ]; then
-              docker inspect $CID
-            fi
-            exit 1
-          fi
-          docker compose run --rm frontend-e2e-test
+          docker compose run frontend-e2e-test
 
       - name: Copy backend test results
         run: |
@@ -227,6 +203,10 @@ jobs:
           mkdir -p test-results/backend-api
           docker cp $(docker compose ps -q backend-api-test):/app/test-results/. test-results/backend-api/
         continue-on-error: true
+
+      - name: Cleanup test containers
+        run: |
+          docker compose rm -f backend-test frontend-test frontend-e2e-test backend-api-test || true
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

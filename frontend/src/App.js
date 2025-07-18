@@ -262,16 +262,16 @@ function App() {
                       />
                       <div className="edit-actions">
                         {/* Save edit button, disabled if title is empty */}
-                        <button className="icon-btn confirm" onClick={() => saveEdit(todo)} disabled={!editingTitle.trim()} title="Save">✓</button>
+                        <button className="icon-btn confirm" onClick={() => saveEdit(todo)} disabled={!editingTitle.trim()} title="Save" aria-label="Save">✓</button>
                         {/* Cancel edit button */}
-                        <button className="icon-btn cancel" onClick={cancelEdit} title="Cancel">⏎</button>
+                        <button className="icon-btn cancel" onClick={cancelEdit} title="Cancel" aria-label="Cancel">⏎</button>
                       </div>
                     </>
                   ) : (
                     <>
                       {/* Display todo title, click to edit */}
                       <span className="todo-title-text" onClick={() => startEdit(todo)} style={{ cursor: 'pointer' }}>{todo.title}</span>
-                      <div className="edit-actions" />
+                      <button className="icon-btn edit" onClick={() => startEdit(todo)} title="Edit" aria-label="Edit">✏️</button>
                     </>
                   )}
                   {/* Delete button (opens modal) */}
@@ -279,6 +279,7 @@ function App() {
                     className="icon-btn delete"
                     onClick={() => handleDeleteClick(todo)}
                     title="Delete todo"
+                    aria-label="Delete"
                   >
                     ✕
                   </button>
@@ -292,8 +293,8 @@ function App() {
               <div className="modal neumorphic-card">
                 <div style={{marginBottom: 16}}>Are you sure you want to delete this todo?</div>
                 <div style={{display: 'flex', gap: 12, justifyContent: 'flex-end'}}>
-                  <button className="icon-btn confirm" onClick={confirmDelete} title="Confirm delete">✓</button>
-                  <button className="icon-btn cancel" onClick={cancelDelete} title="Cancel delete">⏎</button>
+                  <button className="icon-btn confirm" onClick={confirmDelete} title="Confirm delete" aria-label="Confirm">✓</button>
+                  <button className="icon-btn cancel" onClick={cancelDelete} title="Cancel delete" aria-label="Cancel">⏎</button>
                 </div>
               </div>
             </div>

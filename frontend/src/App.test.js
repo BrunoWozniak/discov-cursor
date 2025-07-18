@@ -77,10 +77,12 @@ describe('App', () => {
   });
 
   test('shows error for too long todo title', async () => {
-    window.fetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
+    window.fetch.mockResolvedValueOnce({ ok: true, json: async () => [] }); // initial fetch
     render(<App />);
     fireEvent.change(screen.getByPlaceholderText(/add a new todo/i), { target: { value: 'x'.repeat(81) } });
     fireEvent.click(screen.getByText(/add/i));
+    // After error, App may re-fetch todos, so mock again
+    window.fetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
     expect(await screen.findByText(/cannot exceed 80 characters/i)).toBeInTheDocument();
   });
 }); 

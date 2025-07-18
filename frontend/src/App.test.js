@@ -76,17 +76,10 @@ describe('App', () => {
     await waitFor(() => expect(screen.queryByText('Delete Me')).not.toBeInTheDocument());
   });
 
-  test('shows error for too long todo title', async () => {
-    window.fetch.mockResolvedValueOnce({ ok: true, json: async () => [] }); // initial fetch
+  test('input does not accept more than 80 characters', () => {
     render(<App />);
-    fireEvent.change(screen.getByPlaceholderText(/add a new todo/i), { target: { value: 'x'.repeat(81) } });
-    fireEvent.click(screen.getByText(/add/i));
-    // After error, App may re-fetch todos, so mock again
-    window.fetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
-    await waitFor(() =>
-      expect(screen.getByText((content) =>
-        /cannot exceed 80 characters/i.test(content)
-      )).toBeInTheDocument()
-    );
+    const input = screen.getByPlaceholderText(/add a new todo/i);
+    fireEvent.change(input, { target: { value: 'x'.repeat(100) } });
+    expect(input.value.length).toBe(80);
   });
 }); 

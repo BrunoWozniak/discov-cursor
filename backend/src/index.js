@@ -145,6 +145,18 @@ app.delete('/todos/:id', async (req, res) => {
   }
 });
 
+// Delete all todos (for test/dev only)
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development') {
+  app.delete('/todos', async (req, res) => {
+    try {
+      await pool.query('DELETE FROM todos');
+      res.json({ message: 'All todos deleted' });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+}
+
 app.get('/', (req, res) => {
   res.send('Hello from Express backend!');
 });

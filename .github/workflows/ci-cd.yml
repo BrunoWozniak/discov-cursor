@@ -130,6 +130,8 @@ jobs:
             CID=$(docker compose ps -q backend)
             if [ -n "$CID" ]; then
               STATUS=$(docker inspect -f '{{.State.Status}}' $CID)
+              HEALTH=$(docker inspect -f '{{.State.Health.Status}}' $CID)
+              echo "[Healthcheck debug] Attempt $ATTEMPTS: Status=$STATUS, Health=$HEALTH"
               if [ "$STATUS" = "exited" ]; then
                 echo 'Backend container exited early. Printing logs:'
                 docker logs $CID
@@ -139,7 +141,7 @@ jobs:
                 docker compose run --rm backend node -v || true
                 exit 1
               fi
-              if [ "$(docker inspect -f '{{.State.Health.Status}}' $CID)" = "healthy" ]; then
+              if [ "$HEALTH" = "healthy" ]; then
                 echo 'Backend is healthy!'; break;
               fi
             fi

@@ -58,9 +58,9 @@ describe('App', () => {
     });
     render(<App />);
     expect(await screen.findByText('Edit Me')).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole('button', { name: /edit/i })[0]);
+    fireEvent.click(screen.getByRole('button', { name: /edit/i }));
     expect(screen.getByDisplayValue('Edit Me')).toBeInTheDocument();
-    fireEvent.click(screen.getByText(/cancel/i));
+    fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
     expect(screen.queryByDisplayValue('Edit Me')).not.toBeInTheDocument();
   });
 
@@ -72,7 +72,7 @@ describe('App', () => {
     render(<App />);
     expect(await screen.findByText('Delete Me')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /delete/i }));
-    fireEvent.click(screen.getByText(/confirm/i));
+    fireEvent.click(screen.getByRole('button', { name: /confirm/i }));
     await waitFor(() => expect(screen.queryByText('Delete Me')).not.toBeInTheDocument());
   });
 

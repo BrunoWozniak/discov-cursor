@@ -226,6 +226,7 @@ jobs:
             test-results/frontend/03-frontend-junit.xml
             test-results/frontend-e2e/04-frontend-e2e-junit.xml
           reporter: jest-junit
+          only_github_files: false
 
       - name: Add backend coverage summary to Actions summary
         if: always()

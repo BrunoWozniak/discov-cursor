@@ -24,6 +24,9 @@
   },
   "jest-junit": {
     "outputDirectory": "./test-results",
-    "outputName": "junit.xml"
+    "outputName": "junit.xml",
+    "suiteNameTemplate": "backend:{filepath}",
+    "classNameTemplate": "{classname}",
+    "titleTemplate": "{title}"
   }
 }

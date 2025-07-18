@@ -107,8 +107,6 @@ jobs:
           # 2. Backend API contract tests
           docker compose up backend-api-test
 
-          set -x
-
           # --- IMMEDIATE DEBUG: Print backend logs right after container starts ---
           sleep 5
           echo '--- Backend logs immediately after startup ---'
@@ -126,7 +124,6 @@ jobs:
             if [ -n "$CID" ]; then
               STATUS=$(docker inspect -f '{{.State.Status}}' $CID)
               HEALTH=$(docker inspect -f '{{.State.Health.Status}}' $CID)
-              echo "[Healthcheck debug] Attempt $ATTEMPTS: Status=$STATUS, Health=$HEALTH"
               if [ "$STATUS" = "exited" ]; then
                 echo 'Backend container exited early. Printing logs:'
                 docker logs $CID

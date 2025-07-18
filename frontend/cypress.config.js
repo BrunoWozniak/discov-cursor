@@ -5,7 +5,8 @@ module.exports = {
     reporter: 'junit',
     reporterOptions: {
       mochaFile: './test-results/frontend-e2e-junit.xml',
-      toConsole: true
+      toConsole: true,
+      suiteTitleSeparatedBy: ' > '
     }
   }
 }; 

@@ -31,6 +31,11 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/todos"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
   backend-test:
     build:
       context: ./backend

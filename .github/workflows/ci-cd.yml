@@ -215,10 +215,6 @@ jobs:
           echo 'Contents of test-results/frontend-e2e:'
           ls -l test-results/frontend-e2e || true
 
-      - name: Cleanup test containers
-        run: |
-          docker compose down -v || true
-
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
@@ -230,6 +226,10 @@ jobs:
         with:
           name: coverage
           path: coverage
+
+      - name: Cleanup test containers
+        run: |
+          docker compose down -v || true
 
       - name: Publish Test Results
         uses: dorny/test-reporter@v1

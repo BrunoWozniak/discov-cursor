@@ -2,13 +2,15 @@ const request = require('supertest');
 const app = require('./index');
 const { Pool } = require('pg');
 
-const pool = new Pool({
-  host: process.env.PGHOST || 'localhost',
-  user: process.env.PGUSER || 'postgres',
-  password: process.env.PGPASSWORD || 'postgres',
-  database: process.env.PGDATABASE || 'postgres',
-  port: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
-});
+const pool = process.env.DATABASE_URL
+  ? new Pool({ connectionString: process.env.DATABASE_URL })
+  : new Pool({
+      host: process.env.PGHOST || 'localhost',
+      user: process.env.PGUSER || 'postgres',
+      password: process.env.PGPASSWORD || 'postgres',
+      database: process.env.PGDATABASE || 'postgres',
+      port: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
+    });
 
 beforeEach(async () => {
   await pool.query('DELETE FROM todos');
@@ -89,34 +91,4 @@ describe('Todos API', () => {
     it('should update both fields', async () => {
       const { rows } = await pool.query('INSERT INTO todos (title, completed) VALUES ($1, $2) RETURNING *', ['Old', false]);
       const id = rows[0].id;
-      const res = await request(app).patch(`/todos/${id}`).send({ title: 'New', completed: true });
-      expect(res.statusCode).toBe(200);
-      expect(res.body.title).toBe('New');
-      expect(res.body.completed).toBe(true);
-    });
-    it('should return 404 if not found', async () => {
-      const res = await request(app).patch('/todos/99999').send({ title: 'X' });
-      expect(res.statusCode).toBe(404);
-    });
-    it('should return 400 if no fields', async () => {
-      const { rows } = await pool.query('INSERT INTO todos (title, completed) VALUES ($1, $2) RETURNING *', ['Old', false]);
-      const id = rows[0].id;
-      const res = await request(app).patch(`/todos/${id}`).send({});
-      expect(res.statusCode).toBe(400);
-    });
-  });
-
-  describe('DELETE /todos/:id', () => {
-    it('should delete a todo', async () => {
-      const { rows } = await pool.query('INSERT INTO todos (title, completed) VALUES ($1, $2) RETURNING *', ['Del', false]);
-      const id = rows[0].id;
-      const res = await request(app).delete(`/todos/${id}`);
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty('message', 'Todo deleted');
-    });
-    it('should return 404 if not found', async () => {
-      const res = await request(app).delete('/todos/99999');
-      expect(res.statusCode).toBe(404);
-    });
-  });
-}); 
+      const res = await request(app).patch(`

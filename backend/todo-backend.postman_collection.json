@@ -34,6 +34,7 @@
               "pm.test(\"Response has id\", function () {",
               "    var json = pm.response.json();",
               "    pm.expect(json).to.have.property('id');",
+              "    pm.environment.set('todo_id', json.id);",
               "});"
             ]
           }
@@ -73,9 +74,9 @@
       "request": {
         "method": "GET",
         "url": {
-          "raw": "{{base_url}}/todos/1",
+          "raw": "{{base_url}}/todos/{{todo_id}}",
           "host": ["{{base_url}}"],
-          "path": ["todos", "1"]
+          "path": ["todos", "{{todo_id}}"]
         }
       },
       "event": [
@@ -108,9 +109,9 @@
           "raw": "{\n  \"title\": \"Updated title\",\n  \"completed\": true\n}"
         },
         "url": {
-          "raw": "{{base_url}}/todos/1",
+          "raw": "{{base_url}}/todos/{{todo_id}}",
           "host": ["{{base_url}}"],
-          "path": ["todos", "1"]
+          "path": ["todos", "{{todo_id}}"]
         }
       },
       "event": [
@@ -137,9 +138,9 @@
       "request": {
         "method": "DELETE",
         "url": {
-          "raw": "{{base_url}}/todos/1",
+          "raw": "{{base_url}}/todos/{{todo_id}}",
           "host": ["{{base_url}}"],
-          "path": ["todos", "1"]
+          "path": ["todos", "{{todo_id}}"]
         }
       },
       "event": [

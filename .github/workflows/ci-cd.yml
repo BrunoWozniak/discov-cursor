@@ -86,6 +86,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Clean up Docker environment
+        run: |
+          docker compose down -v --remove-orphans || true
+          docker system prune -af || true
+
       - name: Remove old frontend images to guarantee clean build
         run: |
           docker rmi discov-cursor-frontend || true

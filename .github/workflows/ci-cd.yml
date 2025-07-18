@@ -101,6 +101,8 @@ jobs:
 
           # 2. Backend API contract tests
           docker compose up -d backend
+          echo '--- Backend logs after startup ---'
+          docker compose logs backend
           ATTEMPTS=0
           MAX_ATTEMPTS=60
           while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do

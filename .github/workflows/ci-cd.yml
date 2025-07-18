@@ -174,52 +174,50 @@ jobs:
 
       - name: Copy backend test results
         run: |
-          mkdir -p test-results/backend coverage/backend
+          mkdir -p test-results coverage/backend
           CONTAINER_ID=$(docker ps -a --filter "name=backend-test" --format "{{.ID}}" | head -n 1)
-          docker cp $CONTAINER_ID:/app/test-results/. test-results/backend/ || true
+          docker cp $CONTAINER_ID:/app/test-results/01-backend-junit.xml test-results/01-backend-junit.xml || true
           docker cp $CONTAINER_ID:/app/coverage/. coverage/backend/ || true
         continue-on-error: true
 
       - name: Copy backend API test results
         run: |
-          mkdir -p test-results/backend-api
+          mkdir -p test-results
           CONTAINER_ID=$(docker ps -a --filter "name=backend-api-test" --format "{{.ID}}" | head -n 1)
-          docker cp $CONTAINER_ID:/app/test-results/. test-results/backend-api/ || true
+          docker cp $CONTAINER_ID:/app/test-results/02-backend-api-junit.xml test-results/02-backend-api-junit.xml || true
         continue-on-error: true
 
       - name: Copy frontend test results
         run: |
-          mkdir -p test-results/frontend coverage/frontend
+          mkdir -p test-results coverage/frontend
           CONTAINER_ID=$(docker ps -a --filter "name=frontend-test" --format "{{.ID}}" | head -n 1)
-          docker cp $CONTAINER_ID:/app/test-results/. test-results/frontend/ || true
+          docker cp $CONTAINER_ID:/app/test-results/03-frontend-junit.xml test-results/03-frontend-junit.xml || true
           docker cp $CONTAINER_ID:/app/coverage/. coverage/frontend/ || true
         continue-on-error: true
 
       - name: Copy frontend E2E test results
         run: |
-          mkdir -p test-results/frontend-e2e
+          mkdir -p test-results
           CONTAINER_ID=$(docker ps -a --filter "name=frontend-e2e-test" --format "{{.ID}}" | head -n 1)
-          docker cp $CONTAINER_ID:/app/test-results/. test-results/frontend-e2e/ || true
+          docker cp $CONTAINER_ID:/app/test-results/04-frontend-e2e-junit.xml test-results/04-frontend-e2e-junit.xml || true
         continue-on-error: true
 
-      - name: List test-results directory
+      - name: List test-results and coverage directory
         run: |
           echo 'Contents of test-results:'
           ls -l test-results || true
-          echo 'Contents of test-results/backend:'
-          ls -l test-results/backend || true
-          echo 'Contents of test-results/backend-api:'
-          ls -l test-results/backend-api || true
-          echo 'Contents of test-results/frontend:'
-          ls -l test-results/frontend || true
-          echo 'Contents of test-results/frontend-e2e:'
-          ls -l test-results/frontend-e2e || true
+          echo 'Contents of coverage:'
+          ls -l coverage || true
+          echo 'Contents of coverage/backend:'
+          ls -l coverage/backend || true
+          echo 'Contents of coverage/frontend:'
+          ls -l coverage/frontend || true
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: test-results
+          path: test-results/*.xml
 
       - name: Publish Test Results
         uses: dorny/test-reporter@v2
@@ -227,16 +225,15 @@ jobs:
         with:
           name: Discov-Cursor Full Stack Test Report
           artifact: test-results
-          path: '**/*.xml'
+          path: '*.xml'
           reporter: jest-junit
           use-actions-summary: true
           badge-title: tests
 
-      - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage
+      - name: Add Test & Coverage Summary Title
+        if: always()
+        run: |
+          echo '# Discov-Cursor Test & Coverage Summary' >> $GITHUB_STEP_SUMMARY
 
       - name: Add backend coverage summary to Actions summary
         if: always()
@@ -251,12 +248,18 @@ jobs:
       - name: Add frontend coverage summary to Actions summary
         if: always()
         run: |
-          echo '## 3. Frontend Coverage' >> $GITHUB_STEP_SUMMARY
+          echo '## 2. Frontend Coverage' >> $GITHUB_STEP_SUMMARY
           if [ -f coverage/frontend/coverage-summary.json ]; then
             cat coverage/frontend/coverage-summary.json >> $GITHUB_STEP_SUMMARY
           else
             echo 'No frontend coverage summary found.' >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
 
       - name: Cleanup test containers
         run: |

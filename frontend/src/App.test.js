@@ -83,8 +83,10 @@ describe('App', () => {
     fireEvent.click(screen.getByText(/add/i));
     // After error, App may re-fetch todos, so mock again
     window.fetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
-    expect(await screen.findByText((content) =>
-      /cannot exceed 80 characters/i.test(content)
-    )).toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByText((content) =>
+        /cannot exceed 80 characters/i.test(content)
+      )).toBeInTheDocument()
+    );
   });
 }); 

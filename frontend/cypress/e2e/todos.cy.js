@@ -1,5 +1,7 @@
 describe('Todos App', () => {
   beforeEach(() => {
+    // Clear all todos before each test (requires backend DELETE /todos endpoint)
+    cy.request('DELETE', '/todos');
     cy.visit('/');
   });
 

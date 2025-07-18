@@ -5,6 +5,7 @@ RUN npm install --include=dev knex pg
 RUN npm install --include=dev jest supertest
 RUN npm install --include=dev newman
 RUN npm install --include=dev jest-junit
+RUN mkdir -p /app/test-results /app/coverage
 COPY . .
 CMD ["npm", "run", "dev"] 
 # --- Test stage ---

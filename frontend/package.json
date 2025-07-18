@@ -14,6 +14,10 @@
     "test": "jest --coverage --ci --reporters=default --reporters=jest-junit",
     "test:e2e": "cypress run --reporter junit --reporter-options mochaFile=./test-results/frontend-e2e-junit.xml"
   },
+  "jest-junit": {
+    "outputDirectory": "./test-results",
+    "outputName": "junit.xml"
+  },
   "browserslist": {
     "production": [
       ">0.2%",

@@ -2,6 +2,8 @@ describe('Todos App', () => {
   beforeEach(() => {
     // Clear all todos before each test (requires backend DELETE /todos endpoint)
     cy.request('DELETE', '/todos');
+    cy.wait(500); // Give backend time to process
+    cy.intercept('**/todos**').as('todosApi');
     cy.visit('/');
   });
 
@@ -50,5 +52,14 @@ describe('Todos App', () => {
     cy.get('body').should('have.class', 'dark-mode');
     cy.get('button[aria-label="Toggle dark mode"]').click();
     cy.get('body').should('have.class', 'light-mode');
+  });
+});
+
+afterEach(() => {
+  // Log all API calls for debugging
+  cy.get('@todosApi.all').then((calls) => {
+    if (calls && calls.length) {
+      cy.log('Todos API calls:', calls.length);
+    }
   });
 }); 

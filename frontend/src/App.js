@@ -271,7 +271,6 @@ function App() {
                     <>
                       {/* Display todo title, click to edit */}
                       <span className="todo-title-text" onClick={() => startEdit(todo)} style={{ cursor: 'pointer' }}>{todo.title}</span>
-                      <button className="icon-btn edit" onClick={() => startEdit(todo)} title="Edit" aria-label="Edit">✏️</button>
                     </>
                   )}
                   {/* Delete button (opens modal) */}

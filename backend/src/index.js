@@ -4,6 +4,16 @@ const { Pool } = require('pg');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
+console.log('Starting backend...');
+process.on('uncaughtException', err => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1);
+});
+process.on('unhandledRejection', err => {
+  console.error('Unhandled Rejection:', err);
+  process.exit(1);
+});
+
 app.use(express.json());
 
 // PostgreSQL connection setup

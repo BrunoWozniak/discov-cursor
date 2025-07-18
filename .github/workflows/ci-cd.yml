@@ -112,6 +112,10 @@ jobs:
           echo '--- Backend logs immediately after startup ---'
           docker compose logs backend
 
+          # --- DEBUG: Curl /todos endpoint from inside backend container ---
+          echo '--- Curl /todos from inside backend container ---'
+          docker compose exec backend curl -v http://localhost:4000/todos || true
+
           # --- INTERACTIVE DEBUG: Check files and commands in backend container ---
           echo '--- Backend /app directory listing (interactive) ---'
           docker compose run --rm backend ls -l /app || true

@@ -124,6 +124,18 @@ jobs:
             fi
             exit 1
           fi
+
+          # --- EXTRA DEBUGGING: Print backend logs after container exits (even if healthy) ---
+          CID=$(docker compose ps -q backend)
+          if [ -n "$CID" ]; then
+            echo '--- Backend container logs (docker logs) ---'
+            docker logs $CID
+            echo '--- Backend /app directory listing ---'
+            docker compose exec backend ls -l /app || true
+            echo '--- Node version in backend container ---'
+            docker compose exec backend node -v || true
+          fi
+
           docker compose run --rm backend-api-test
 
           # 3. Frontend unit/component tests

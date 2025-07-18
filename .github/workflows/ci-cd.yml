@@ -202,6 +202,26 @@ jobs:
           docker cp $CONTAINER_ID:/app/test-results/. test-results/frontend-e2e/ || true
         continue-on-error: true
 
+      - name: Add backend coverage summary to Actions summary
+        if: always()
+        run: |
+          echo '## Backend Coverage' >> $GITHUB_STEP_SUMMARY
+          if [ -f backend/coverage/coverage-summary.json ]; then
+            cat backend/coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+          else
+            echo 'No backend coverage summary found.' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Add frontend coverage summary to Actions summary
+        if: always()
+        run: |
+          echo '## Frontend Coverage' >> $GITHUB_STEP_SUMMARY
+          if [ -f frontend/coverage/coverage-summary.json ]; then
+            cat frontend/coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+          else
+            echo 'No frontend coverage summary found.' >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: List test-results directory
         run: |
           echo 'Contents of test-results:'
@@ -227,10 +247,6 @@ jobs:
           name: coverage
           path: coverage
 
-      - name: Cleanup test containers
-        run: |
-          docker compose down -v || true
-
       - name: Publish Test Results
         uses: dorny/test-reporter@v1
         if: always()
@@ -242,3 +258,7 @@ jobs:
             test-results/03-frontend-junit.xml
             test-results/04-frontend-e2e-junit.xml
           reporter: jest-junit 
+
+      - name: Cleanup test containers
+        run: |
+          docker compose down -v || true

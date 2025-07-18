@@ -17,18 +17,26 @@ process.on('unhandledRejection', err => {
 app.use(express.json());
 
 // PostgreSQL connection setup
-const pool = process.env.DATABASE_URL
-  ? new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-    })
-  : new Pool({
-      host: process.env.PGHOST || 'localhost',
-      user: process.env.PGUSER || 'postgres',
-      password: process.env.PGPASSWORD || 'postgres',
-      database: process.env.PGDATABASE || 'postgres',
-      port: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
-    });
+console.log('About to create Postgres pool...');
+let pool;
+try {
+  pool = process.env.DATABASE_URL
+    ? new (require('pg').Pool)({
+        connectionString: process.env.DATABASE_URL,
+        ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+      })
+    : new (require('pg').Pool)({
+        host: process.env.PGHOST || 'localhost',
+        user: process.env.PGUSER || 'postgres',
+        password: process.env.PGPASSWORD || 'postgres',
+        database: process.env.PGDATABASE || 'postgres',
+        port: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
+      });
+  console.log('Postgres pool created!');
+} catch (err) {
+  console.error('Error creating Postgres pool:', err);
+  process.exit(1);
+}
 
 // Handle CORS properly
 const cors = require('cors');

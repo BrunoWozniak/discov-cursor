@@ -107,8 +107,20 @@ jobs:
           MAX_ATTEMPTS=60
           while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
             CID=$(docker compose ps -q backend)
-            if [ -n "$CID" ] && [ "$(docker inspect -f '{{.State.Health.Status}}' $CID)" = "healthy" ]; then
-              echo 'Backend is healthy!'; break;
+            if [ -n "$CID" ]; then
+              STATUS=$(docker inspect -f '{{.State.Status}}' $CID)
+              if [ "$STATUS" = "exited" ]; then
+                echo 'Backend container exited early. Printing logs:'
+                docker logs $CID
+                echo '--- Backend /app directory listing ---'
+                docker compose run --rm backend ls -l /app || true
+                echo '--- Node version in backend container ---'
+                docker compose run --rm backend node -v || true
+                exit 1
+              fi
+              if [ "$(docker inspect -f '{{.State.Health.Status}}' $CID)" = "healthy" ]; then
+                echo 'Backend is healthy!'; break;
+              fi
             fi
             echo 'Still waiting for backend...';
             sleep 2;
@@ -121,6 +133,12 @@ jobs:
             CID=$(docker compose ps -q backend)
             if [ -n "$CID" ]; then
               docker inspect $CID
+              echo '--- Backend container logs (docker logs) ---'
+              docker logs $CID
+              echo '--- Backend /app directory listing ---'
+              docker compose run --rm backend ls -l /app || true
+              echo '--- Node version in backend container ---'
+              docker compose run --rm backend node -v || true
             fi
             exit 1
           fi

@@ -102,10 +102,10 @@ jobs:
           docker compose up -d db
 
           # 1. Backend unit/integration tests
-          docker compose run backend-test
+          docker compose up --abort-on-container-exit backend-test
 
           # 2. Backend API contract tests
-          docker compose run backend-api-test
+          docker compose up --abort-on-container-exit backend-api-test
 
           set -x
 
@@ -173,16 +173,22 @@ jobs:
           fi
 
           # 3. Frontend unit/component tests
-          docker compose run frontend-test
+          docker compose up --abort-on-container-exit frontend-test
 
           # 4. Frontend up + E2E tests
-          docker compose run frontend-e2e-test
+          docker compose up --abort-on-container-exit frontend-e2e-test
 
       - name: Copy backend test results
         run: |
           mkdir -p test-results/backend coverage/backend
           docker cp $(docker compose ps -q backend-test):/app/test-results/. test-results/backend/
           docker cp $(docker compose ps -q backend-test):/app/coverage/. coverage/backend/
+        continue-on-error: true
+
+      - name: Copy backend API test results
+        run: |
+          mkdir -p test-results/backend-api
+          docker cp $(docker compose ps -q backend-api-test):/app/test-results/. test-results/backend-api/
         continue-on-error: true
 
       - name: Copy frontend test results
@@ -198,15 +204,9 @@ jobs:
           docker cp $(docker compose ps -q frontend-e2e-test):/app/test-results/. test-results/frontend-e2e/
         continue-on-error: true
 
-      - name: Copy backend API test results
-        run: |
-          mkdir -p test-results/backend-api
-          docker cp $(docker compose ps -q backend-api-test):/app/test-results/. test-results/backend-api/
-        continue-on-error: true
-
       - name: Cleanup test containers
         run: |
-          docker compose rm -f backend-test frontend-test frontend-e2e-test backend-api-test || true
+          docker compose down -v || true
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

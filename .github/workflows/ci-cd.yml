@@ -181,27 +181,31 @@ jobs:
       - name: Copy backend test results
         run: |
           mkdir -p test-results/backend coverage/backend
-          docker cp $(docker compose ps -q backend-test):/app/test-results/. test-results/backend/
-          docker cp $(docker compose ps -q backend-test):/app/coverage/. coverage/backend/
+          CONTAINER_ID=$(docker ps -a --filter "name=backend-test" --format "{{.ID}}" | head -n 1)
+          docker cp $CONTAINER_ID:/app/test-results/. test-results/backend/ || true
+          docker cp $CONTAINER_ID:/app/coverage/. coverage/backend/ || true
         continue-on-error: true
 
       - name: Copy backend API test results
         run: |
           mkdir -p test-results/backend-api
-          docker cp $(docker compose ps -q backend-api-test):/app/test-results/. test-results/backend-api/
+          CONTAINER_ID=$(docker ps -a --filter "name=backend-api-test" --format "{{.ID}}" | head -n 1)
+          docker cp $CONTAINER_ID:/app/test-results/. test-results/backend-api/ || true
         continue-on-error: true
 
       - name: Copy frontend test results
         run: |
           mkdir -p test-results/frontend coverage/frontend
-          docker cp $(docker compose ps -q frontend-test):/app/test-results/. test-results/frontend/
-          docker cp $(docker compose ps -q frontend-test):/app/coverage/. coverage/frontend/
+          CONTAINER_ID=$(docker ps -a --filter "name=frontend-test" --format "{{.ID}}" | head -n 1)
+          docker cp $CONTAINER_ID:/app/test-results/. test-results/frontend/ || true
+          docker cp $CONTAINER_ID:/app/coverage/. coverage/frontend/ || true
         continue-on-error: true
 
       - name: Copy frontend E2E test results
         run: |
           mkdir -p test-results/frontend-e2e
-          docker cp $(docker compose ps -q frontend-e2e-test):/app/test-results/. test-results/frontend-e2e/
+          CONTAINER_ID=$(docker ps -a --filter "name=frontend-e2e-test" --format "{{.ID}}" | head -n 1)
+          docker cp $CONTAINER_ID:/app/test-results/. test-results/frontend-e2e/ || true
         continue-on-error: true
 
       - name: Cleanup test containers

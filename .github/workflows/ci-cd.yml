@@ -246,7 +246,7 @@ jobs:
         run: |
           echo '## 1. Backend Coverage' >> $GITHUB_STEP_SUMMARY
           if [ -f coverage/backend/coverage-summary.json ]; then
-            cat coverage/backend/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+            node scripts/coverage-to-md.js coverage/backend/coverage-summary.json >> $GITHUB_STEP_SUMMARY
           else
             echo 'No backend coverage summary found.' >> $GITHUB_STEP_SUMMARY
           fi
@@ -256,7 +256,7 @@ jobs:
         run: |
           echo '## 2. Frontend Coverage' >> $GITHUB_STEP_SUMMARY
           if [ -f coverage/frontend/coverage-summary.json ]; then
-            cat coverage/frontend/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+            node scripts/coverage-to-md.js coverage/frontend/coverage-summary.json >> $GITHUB_STEP_SUMMARY
           else
             echo 'No frontend coverage summary found.' >> $GITHUB_STEP_SUMMARY
           fi

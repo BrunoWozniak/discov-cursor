@@ -28,5 +28,8 @@
     "suiteNameTemplate": "backend:{filepath}",
     "classNameTemplate": "{classname}",
     "titleTemplate": "{title}"
+  },
+  "jest": {
+    "coverageReporters": ["json", "json-summary", "lcov", "text", "clover"]
   }
 }

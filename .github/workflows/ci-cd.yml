@@ -102,10 +102,10 @@ jobs:
           docker compose up -d db
 
           # 1. Backend unit/integration tests
-          docker compose up --abort-on-container-exit backend-test
+          docker compose up backend-test
 
           # 2. Backend API contract tests
-          docker compose up --abort-on-container-exit backend-api-test
+          docker compose up backend-api-test
 
           set -x
 
@@ -173,10 +173,10 @@ jobs:
           fi
 
           # 3. Frontend unit/component tests
-          docker compose up --abort-on-container-exit frontend-test
+          docker compose up frontend-test
 
           # 4. Frontend up + E2E tests
-          docker compose up --abort-on-container-exit frontend-e2e-test
+          docker compose up frontend-e2e-test
 
       - name: Copy backend test results
         run: |

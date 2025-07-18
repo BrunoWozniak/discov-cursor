@@ -121,6 +121,7 @@ jobs:
             exit 1
           fi
           docker compose run --rm frontend-e2e-test
+          docker compose up -d backend
           docker compose run --rm backend-api-test
 
       - name: Copy backend test results

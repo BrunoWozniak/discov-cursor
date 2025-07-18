@@ -216,7 +216,7 @@ jobs:
           ls -l test-results/frontend-e2e || true
 
       - name: Publish Test Results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v1.7.0
         if: always()
         with:
           name: Discov-Cursor Full Stack Test Report

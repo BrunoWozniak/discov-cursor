@@ -202,6 +202,18 @@ jobs:
           docker cp $CONTAINER_ID:/app/test-results/. test-results/frontend-e2e/ || true
         continue-on-error: true
 
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Discov-Cursor Full Stack Test Report
+          path: |
+            test-results/backend/01-backend-junit.xml
+            test-results/backend-api/02-backend-api-junit.xml
+            test-results/frontend/03-frontend-junit.xml
+            test-results/frontend-e2e/04-frontend-e2e-junit.xml
+          reporter: jest-junit
+
       - name: Add backend coverage summary to Actions summary
         if: always()
         run: |
@@ -246,18 +258,6 @@ jobs:
         with:
           name: coverage
           path: coverage
-
-      - name: Publish Test Results
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: Discov-Cursor Full Stack Test Report
-          path: |
-            test-results/backend/01-backend-junit.xml
-            test-results/backend-api/02-backend-api-junit.xml
-            test-results/frontend/03-frontend-junit.xml
-            test-results/frontend-e2e/04-frontend-e2e-junit.xml
-          reporter: jest-junit 
 
       - name: Cleanup test containers
         run: |

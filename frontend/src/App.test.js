@@ -3,9 +3,15 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from './App';
 
 beforeEach(() => {
-  jest.spyOn(window, 'fetch');
-  window.fetch.mockClear();
-  localStorage.clear();
+  jest.spyOn(window, 'fetch').mockImplementation(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve([]),
+    })
+  );
+});
+afterEach(() => {
+  window.fetch.mockRestore();
 });
 
 describe('App', () => {

@@ -2,8 +2,11 @@ describe('Todos App', () => {
   beforeEach(() => {
     // Clear all todos before each test (requires backend DELETE /todos endpoint)
     cy.request('DELETE', '/todos');
-    cy.wait(500); // Give backend time to process
-    cy.intercept('**/todos**').as('todosApi');
+    cy.wait(1000); // Give backend time to process
+    cy.intercept('POST', '**/todos').as('addTodo');
+    cy.intercept('GET', '**/todos').as('getTodos');
+    cy.intercept('PATCH', '**/todos/*').as('patchTodo');
+    cy.intercept('DELETE', '**/todos/*').as('deleteTodo');
     cy.visit('/');
   });
 
@@ -14,6 +17,12 @@ describe('Todos App', () => {
   it('can add a todo', () => {
     cy.get('input[placeholder="Add a new todo..."]').type('E2E Todo');
     cy.contains('Add').click();
+    cy.wait('@addTodo').then((interception) => {
+      cy.log('Add Todo response:', JSON.stringify(interception.response));
+    });
+    cy.wait('@getTodos').then((interception) => {
+      cy.log('Get Todos response:', JSON.stringify(interception.response));
+    });
     cy.contains('E2E Todo').should('exist');
   });
 

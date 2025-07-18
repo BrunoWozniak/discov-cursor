@@ -253,10 +253,10 @@ jobs:
         with:
           name: Discov-Cursor Full Stack Test Report
           path: |
-            test-results/01-backend-junit.xml
-            test-results/02-backend-api-junit.xml
-            test-results/03-frontend-junit.xml
-            test-results/04-frontend-e2e-junit.xml
+            test-results/backend/01-backend-junit.xml
+            test-results/backend-api/02-backend-api-junit.xml
+            test-results/frontend/03-frontend-junit.xml
+            test-results/frontend-e2e/04-frontend-e2e-junit.xml
           reporter: jest-junit 
 
       - name: Cleanup test containers

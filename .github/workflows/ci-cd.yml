@@ -107,6 +107,8 @@ jobs:
           # 2. Backend API contract tests
           docker compose up -d backend
 
+          set -x
+
           # --- IMMEDIATE DEBUG: Print backend logs right after container starts ---
           sleep 5
           echo '--- Backend logs immediately after startup ---'
@@ -114,16 +116,9 @@ jobs:
 
           # --- DEBUG: Curl /todos endpoint from inside backend container ---
           echo '--- Curl /todos from inside backend container ---'
-          docker compose exec backend curl -v http://localhost:4000/todos || true
+          docker compose run --rm backend curl -v http://localhost:4000/todos || true
 
-          # --- INTERACTIVE DEBUG: Check files and commands in backend container ---
-          echo '--- Backend /app directory listing (interactive) ---'
-          docker compose run --rm backend ls -l /app || true
-          echo '--- Node version in backend container (interactive) ---'
-          docker compose run --rm backend node -v || true
-          echo '--- Try running npm run dev in backend container (interactive) ---'
-          docker compose run --rm backend npm run dev || true
-
+          echo '--- ENTERING BACKEND HEALTHCHECK LOOP ---'
           ATTEMPTS=0
           MAX_ATTEMPTS=60
           while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do

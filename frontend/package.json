@@ -14,6 +14,9 @@
     "test": "jest --coverage --ci --reporters=default --reporters=jest-junit",
     "test:e2e": "cypress run --reporter junit --reporter-options mochaFile=./test-results/frontend-e2e-junit.xml"
   },
+  "devDependencies": {
+    "whatwg-fetch": "^3.6.2"
+  },
   "jest-junit": {
     "outputDirectory": "./test-results",
     "outputName": "03-frontend-junit.xml",

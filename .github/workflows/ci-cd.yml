@@ -227,11 +227,7 @@ jobs:
         with:
           name: Discov-Cursor Full Stack Test Report
           artifact: test-results
-          path: |
-            backend/01-backend-junit.xml
-            backend-api/02-backend-api-junit.xml
-            frontend/03-frontend-junit.xml
-            frontend-e2e/04-frontend-e2e-junit.xml
+          path: '**/*.xml'
           reporter: jest-junit
           use-actions-summary: true
           badge-title: tests

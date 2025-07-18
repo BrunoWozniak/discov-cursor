@@ -21,7 +21,24 @@
           "host": ["{{base_url}}"],
           "path": ["todos"]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test(\"Response has id\", function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.have.property('id');",
+              "});"
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "Get All Todos",
@@ -32,7 +49,24 @@
           "host": ["{{base_url}}"],
           "path": ["todos"]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response is array\", function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(Array.isArray(json)).to.be.true;",
+              "});"
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "Get One Todo",
@@ -43,7 +77,24 @@
           "host": ["{{base_url}}"],
           "path": ["todos", "1"]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response has id\", function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.have.property('id');",
+              "});"
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "Patch Todo",
@@ -61,7 +112,25 @@
           "host": ["{{base_url}}"],
           "path": ["todos", "1"]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response has id and completed true\", function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.have.property('id');",
+              "    pm.expect(json.completed).to.be.true;",
+              "});"
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "Delete Todo",
@@ -72,7 +141,24 @@
           "host": ["{{base_url}}"],
           "path": ["todos", "1"]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response has message\", function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.have.property('message');",
+              "});"
+            ]
+          }
+        }
+      ]
     }
   ],
   "variable": [

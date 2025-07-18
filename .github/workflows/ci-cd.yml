@@ -232,12 +232,18 @@ jobs:
           use-actions-summary: true
           badge-title: tests
 
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+
       - name: Add backend coverage summary to Actions summary
         if: always()
         run: |
-          echo '## Backend Coverage' >> $GITHUB_STEP_SUMMARY
-          if [ -f backend/coverage/coverage-summary.json ]; then
-            cat backend/coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+          echo '## 1. Backend Coverage' >> $GITHUB_STEP_SUMMARY
+          if [ -f coverage/backend/coverage-summary.json ]; then
+            cat coverage/backend/coverage-summary.json >> $GITHUB_STEP_SUMMARY
           else
             echo 'No backend coverage summary found.' >> $GITHUB_STEP_SUMMARY
           fi
@@ -245,18 +251,12 @@ jobs:
       - name: Add frontend coverage summary to Actions summary
         if: always()
         run: |
-          echo '## Frontend Coverage' >> $GITHUB_STEP_SUMMARY
-          if [ -f frontend/coverage/coverage-summary.json ]; then
-            cat frontend/coverage/coverage-summary.json >> $GITHUB_STEP_SUMMARY
+          echo '## 3. Frontend Coverage' >> $GITHUB_STEP_SUMMARY
+          if [ -f coverage/frontend/coverage-summary.json ]; then
+            cat coverage/frontend/coverage-summary.json >> $GITHUB_STEP_SUMMARY
           else
             echo 'No frontend coverage summary found.' >> $GITHUB_STEP_SUMMARY
           fi
-
-      - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage
 
       - name: Cleanup test containers
         run: |

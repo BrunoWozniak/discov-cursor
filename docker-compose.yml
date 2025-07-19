@@ -75,6 +75,7 @@ services:
       target: prod-server
       args:
         REACT_APP_API_URL: http://backend-server-test:4000
+        HOMEPAGE: /
     environment:
       - NODE_ENV=test
     depends_on:

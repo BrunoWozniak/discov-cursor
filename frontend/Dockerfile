@@ -59,9 +59,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --include=dev
 ARG REACT_APP_API_URL
+ARG HOMEPAGE
 ENV REACT_APP_API_URL=$REACT_APP_API_URL
 RUN echo "Building with API URL: $REACT_APP_API_URL"
+RUN echo "Building with HOMEPAGE: $HOMEPAGE"
 COPY . .
+RUN if [ -n "$HOMEPAGE" ]; then \
+      sed -i "s|\"homepage\": \".*\"|\"homepage\": \"$HOMEPAGE\"|" package.json; \
+    fi
 RUN npm run build
 
 # --- Production server ---

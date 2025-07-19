@@ -95,80 +95,55 @@ jobs:
           docker rmi discov-cursor-frontend-e2e || true
       - name: Build and run all tests with Docker Compose
         run: |
-          docker compose build --no-cache
-          docker compose up -d db
+          docker compose --profile test build --no-cache
+          docker compose --profile test up -d db
 
           # 1. Backend unit/integration tests
-          docker compose up backend-test
+          docker compose --profile test up backend-test
 
           # 2. Backend API contract tests
-          docker compose up backend-api-test
+          docker compose --profile test up backend-api-test
 
 
 
-          echo '--- ENTERING BACKEND HEALTHCHECK LOOP ---'
+          # Wait for backend-server-test to be ready for API tests
+          echo '--- Waiting for backend-server-test to be ready ---'
+          docker compose --profile test up -d backend-server-test
+          
           ATTEMPTS=0
           MAX_ATTEMPTS=60
           while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
-            CID=$(docker compose ps -q backend)
+            CID=$(docker compose --profile test ps -q backend-server-test)
             if [ -n "$CID" ]; then
               STATUS=$(docker inspect -f '{{.State.Status}}' $CID)
               HEALTH=$(docker inspect -f '{{.State.Health.Status}}' $CID)
               if [ "$STATUS" = "exited" ]; then
-                echo 'Backend container exited early. Printing logs:'
+                echo 'Backend server test container exited early. Printing logs:'
                 docker logs $CID
-                echo '--- Backend /app directory listing ---'
-                docker compose run --rm backend ls -l /app || true
-                echo '--- Node version in backend container ---'
-                docker compose run --rm backend node -v || true
                 exit 1
               fi
               if [ "$HEALTH" = "healthy" ]; then
-                echo 'Backend is healthy!'; break;
+                echo 'Backend server test is healthy!'; break;
               fi
             fi
-            echo 'Still waiting for backend...';
+            echo 'Still waiting for backend-server-test...';
             sleep 2;
             ATTEMPTS=$((ATTEMPTS+1))
           done
           if [ $ATTEMPTS -eq $MAX_ATTEMPTS ]; then
-            echo 'Backend did not become healthy in time. Printing diagnostics:'
-            docker compose ps -a
-            docker compose logs backend
-            CID=$(docker compose ps -q backend)
-            if [ -n "$CID" ]; then
-              docker inspect $CID
-              echo '--- Backend container logs (docker logs) ---'
-              docker logs $CID
-              echo '--- Backend /app directory listing ---'
-              docker compose run --rm backend ls -l /app || true
-              echo '--- Node version in backend container ---'
-              docker compose run --rm backend node -v || true
-            fi
+            echo 'Backend server test did not become healthy in time. Printing diagnostics:'
+            docker compose --profile test ps -a
+            docker compose --profile test logs backend-server-test
             exit 1
           fi
 
 
 
           # 3. Frontend unit/component tests
-          docker compose up frontend-test
+          docker compose --profile test up frontend-test
 
-          # Wait for frontend to be ready
-          echo '--- Waiting for frontend to be ready on port 3000 ---'
-          for i in {1..30}; do
-            if docker compose exec frontend curl -s http://localhost:3000 > /dev/null; then
-              echo "Frontend is up!"
-              break
-            fi
-            echo "Waiting for frontend..."
-            sleep 2
-          done
-
-          # 4. Frontend up + E2E tests
-          docker compose up frontend-e2e-test
-
-          echo '--- Frontend container logs after E2E tests ---'
-          docker compose logs frontend
+          # 4. Frontend E2E tests
+          docker compose --profile test up frontend-e2e-test
 
       - name: Copy backend test results
         run: |
@@ -261,4 +236,4 @@ jobs:
 
       - name: Cleanup test containers
         run: |
-          docker compose down -v || true
+          docker compose --profile test down -v || true

@@ -122,6 +122,7 @@ services:
       retries: 20
     profiles: ["dev", "test"]
   backend-server-test:
+    image: discov-cursor-backend-server-test
     build:
       context: ./backend
       dockerfile: Dockerfile

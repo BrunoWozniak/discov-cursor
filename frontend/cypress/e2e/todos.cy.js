@@ -11,12 +11,8 @@ describe('Todos App', () => {
   });
 
   it('debug: check what is on the page', () => {
-    cy.log('Page URL:', cy.url());
-    cy.get('body').then(($body) => {
-      cy.log('Body HTML:', $body.html());
-    });
-    cy.get('html').then(($html) => {
-      cy.log('Page title:', $html.find('title').text());
+    cy.document().then((doc) => {
+      cy.log('Full HTML:', doc.documentElement.outerHTML);
     });
   });
 

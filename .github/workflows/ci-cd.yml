@@ -169,8 +169,22 @@ jobs:
           # 3. Frontend unit/component tests
           docker compose up frontend-test
 
+          # Wait for frontend to be ready
+          echo '--- Waiting for frontend to be ready on port 3000 ---'
+          for i in {1..30}; do
+            if docker compose exec frontend curl -s http://localhost:3000 > /dev/null; then
+              echo "Frontend is up!"
+              break
+            fi
+            echo "Waiting for frontend..."
+            sleep 2
+          done
+
           # 4. Frontend up + E2E tests
           docker compose up frontend-e2e-test
+
+          echo '--- Frontend container logs after E2E tests ---'
+          docker compose logs frontend
 
       - name: Copy backend test results
         run: |

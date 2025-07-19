@@ -4,7 +4,7 @@ const { Pool } = require('pg');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-console.log('Starting backend...');
+// Error handling for uncaught exceptions
 process.on('uncaughtException', err => {
   console.error('Uncaught Exception:', err);
   process.exit(1);
@@ -17,7 +17,6 @@ process.on('unhandledRejection', err => {
 app.use(express.json());
 
 // PostgreSQL connection setup
-console.log('About to create Postgres pool...');
 let pool;
 try {
   pool = process.env.DATABASE_URL
@@ -32,7 +31,6 @@ try {
         database: process.env.PGDATABASE || 'postgres',
         port: process.env.PGPORT ? parseInt(process.env.PGPORT) : 5432,
       });
-  console.log('Postgres pool created!');
 } catch (err) {
   console.error('Error creating Postgres pool:', err);
   process.exit(1);
@@ -42,22 +40,35 @@ try {
 const cors = require('cors');
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://brunowozniak.github.io"
+  "https://brunowozniak.github.io",
+  "http://frontend-server-test:3000",
+  "http://frontend-e2e-test:3000"
 ];
-app.use(cors({
-  origin: function(origin, callback) {
-    // allow requests with no origin (like mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200
-}));
+
+// In test environment, be more permissive with CORS
+if (process.env.NODE_ENV === 'test') {
+  app.use(cors({
+    origin: true, // Allow all origins in test environment
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200
+  }));
+} else {
+  app.use(cors({
+    origin: function(origin, callback) {
+      // allow requests with no origin (like mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        return callback(null, true);
+      } else {
+        return callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200
+  }));
+}
 
 app.options('*', cors());
 
@@ -163,7 +174,7 @@ app.get('/', (req, res) => {
 
 if (require.main === module) {
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Todo API server running on port ${PORT}`);
   });
 }
 

@@ -1,11 +1,11 @@
 # Todo Backend API Documentation
 
-**Note for Docker Compose setups:**
-- If your frontend runs in a separate container, use the backend service name (e.g., `backend`) as the API host instead of `localhost`.
-- Example API base URL from the frontend container: `http://backend:4000`
-- For local development on your host machine, use `http://localhost:4000`.
+## Base URL
+- **Local Development**: `http://localhost:4000`
+- **Docker Containers**: `http://backend:4000`
 
-Base URL: `http://localhost:4000` (from host) or `http://backend:4000` (from another container)
+## Authentication
+No authentication required for this demo application.
 
 ## Endpoints
 
@@ -114,7 +114,6 @@ Base URL: `http://localhost:4000` (from host) or `http://backend:4000` (from ano
     ```
 
 ## Notes
-- All requests and responses use JSON.
-- CORS may need to be enabled on the backend for frontend development.
-- The backend must be running and accessible at the specified base URL.
-- **In Docker Compose, use the backend service name as the host (e.g., `http://backend:4000`) from other containers.** 
+- All requests and responses use JSON
+- CORS is configured for development and testing environments
+- The backend must be running and accessible at the specified base URL 

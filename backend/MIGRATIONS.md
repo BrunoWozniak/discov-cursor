@@ -1,7 +1,8 @@
 # Database Migrations with Knex.js
 
-This project uses [Knex.js](https://knexjs.org/) for database schema migrations.  
-**All migration commands are run inside the backend container—no local install needed!**
+This project uses [Knex.js](https://knexjs.org/) for database schema migrations.
+
+**All migration commands run inside the backend container—no local install needed!**
 
 ---
 

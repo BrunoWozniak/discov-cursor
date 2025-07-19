@@ -1,67 +1,167 @@
-# Discov Cursor Project
+# Discov Cursor - Full-Stack Todo Application
 
-## Overview
-This project is a full-stack app with a React frontend and an Express/Postgres backend, fully containerized with Docker Compose. It supports automated database migrations and a robust dev workflow.
+A modern, containerized full-stack application with React frontend, Express/PostgreSQL backend, and comprehensive testing suite.
 
----
+## 🚀 Quick Start
 
-## Getting Started
+### Prerequisites
+- Docker and Docker Compose
+- Git
 
-### 1. Clone the Repository
+### Development Setup
 ```bash
+# Clone and start development environment
 git clone <your-repo-url>
-cd <repo-folder>
+cd discov-cursor
+docker compose --profile dev up
 ```
 
-### 2. Set Up Environment Variables
-- Copy `.env.example` to `.env` in both `frontend/` and `backend/` if you need to override defaults.
+Visit: http://localhost:3000/discov-cursor
 
-### 3. Start the Dev Environment
+### Run All Tests
 ```bash
-docker-compose up --build -d
+docker compose --profile test up
 ```
-- This will start the frontend, backend, and database containers.
-- All dependencies are installed inside the containers (no need for local npm install).
 
 ---
 
-## Development Workflow
+## 🏗️ Architecture
 
-- **Edit code inside the dev containers:**
-  - Your local `frontend/` and `backend/` folders are mounted into the containers.
-  - Any changes you make locally are reflected live in the running containers.
-  - For backend, `nodemon` restarts the server on code changes.
-  - For frontend, React hot reload is enabled.
+- **Frontend**: React with Neumorphic UI design
+- **Backend**: Express.js REST API
+- **Database**: PostgreSQL with Knex.js migrations
+- **Testing**: Jest (unit), Newman (API), Cypress (E2E)
+- **Containerization**: Docker Compose with isolated environments
 
-**Tip:** You do NOT need to run `npm install` locally. All dependencies are managed inside the containers.
+## 📁 Project Structure
+
+```
+discov-cursor/
+├── frontend/          # React application
+├── backend/           # Express API server
+├── db/               # Database initialization
+├── scripts/          # Utility scripts
+├── .github/          # CI/CD workflows
+└── docker-compose.yml
+```
+
+## 🧪 Testing Strategy
+
+### Test Profiles
+- **Development**: `docker compose --profile dev up`
+- **Testing**: `docker compose --profile test up`
+
+### Test Types
+1. **Backend Unit Tests**: Jest integration tests
+2. **API Contract Tests**: Newman/Postman collection
+3. **Frontend Unit Tests**: Jest component tests
+4. **E2E Tests**: Cypress browser automation
+
+### Test Isolation
+- Each test type runs in isolated containers
+- Separate database instances for testing
+- Production builds for E2E testing
+
+## 🗄️ Database Management
+
+### Migrations
+This project uses Knex.js for database schema management.
+
+**Create a migration:**
+```bash
+docker compose exec backend npx knex migrate:make your_migration_name
+```
+
+**Apply migrations:**
+- Automatic on container startup
+- No manual commands needed
+
+See [`backend/MIGRATIONS.md`](backend/MIGRATIONS.md) for detailed workflow.
+
+## 🔌 API Documentation
+
+Complete API documentation: [`backend/BACKEND_API_DOC.md`](backend/BACKEND_API_DOC.md)
+
+**Base URL**: `http://localhost:4000` (host) or `http://backend:4000` (container)
+
+**Endpoints**:
+- `POST /todos` - Create todo
+- `GET /todos` - List all todos
+- `GET /todos/:id` - Get single todo
+- `PATCH /todos/:id` - Update todo
+- `DELETE /todos/:id` - Delete todo
+
+## 🚀 Deployment
+
+### Frontend
+- **Platform**: GitHub Pages
+- **CI/CD**: Automated via GitHub Actions
+- **Domain**: Configure in `.github/workflows/ci-cd.yml`
+
+### Backend
+- **Platform**: Render (Docker service)
+- **Database**: Render managed PostgreSQL
+- **Environment**: Set via Render dashboard
+
+### CI/CD Pipeline
+- Automated testing on every push
+- Test results and coverage reporting
+- Artifact uploads for debugging
+
+## 🛠️ Development Workflow
+
+### Code Changes
+- Edit files locally (mounted into containers)
+- Hot reload for frontend (React)
+- Auto-restart for backend (Nodemon)
+- No local `npm install` required
+
+### Testing Locally
+```bash
+# Run specific test types
+docker compose up backend-test          # Backend unit tests
+docker compose up backend-api-test      # API contract tests
+docker compose up frontend-test         # Frontend unit tests
+docker compose up frontend-e2e-test     # E2E tests
+```
+
+### Database Changes
+1. Create migration: `docker compose exec backend npx knex migrate:make name`
+2. Edit migration file in `backend/migrations/`
+3. Restart containers: `docker compose restart backend`
+
+## 📊 Monitoring & Debugging
+
+### Logs
+```bash
+# View all logs
+docker compose logs
+
+# View specific service
+docker compose logs backend
+docker compose logs frontend
+```
+
+### Test Results
+- JUnit XML reports in `test-results/`
+- Coverage reports in `coverage/`
+- GitHub Actions summary with test results
+
+## 🤝 Contributing
+
+1. Follow the development workflow above
+2. Use migrations for all database changes
+3. Ensure all tests pass before submitting
+4. Update documentation as needed
 
 ---
 
-## Database Migrations
+## 📝 License
 
-- This project uses [Knex.js](https://knexjs.org/) for schema migrations.
-- **Whenever you change the database schema, create a new migration.**
-- See [`backend/MIGRATIONS.md`](backend/MIGRATIONS.md) for a step-by-step guide.
-- Migrations are applied automatically every time the backend container starts.
+[Add your license here]
 
----
+## 🔗 Links
 
-## Backend API & Postman Collection
-
-- The backend API is documented in [`backend/BACKEND_API_DOC.md`](backend/BACKEND_API_DOC.md).
-- You can test the backend endpoints using the provided Postman collection: [`backend/todo-backend.postman_collection.json`](backend/todo-backend.postman_collection.json).
-
----
-
-## Production/Build & Deployment
-- **Frontend:** Deployed to GitHub Pages via CI/CD workflow. Set your custom domain in `.github/workflows/ci-cd.yml` and your repo's Pages settings.
-- **Backend:** Deployed to [Render](https://render.com/) as a Docker service. Connect your GitHub repo to Render and follow their dashboard to set up the backend and managed Postgres database. Set environment variables in the Render dashboard (see `.env.example`).
-- **Database:** Use Render's managed Postgres add-on. Copy connection details to your backend's environment variables in Render.
-- For CI/CD and deployment, see `.github/workflows/ci-cd.yml` and Render's documentation.
-
----
-
-## Contributing
-- Please follow the dev workflow above.
-- Use migrations for all DB schema changes.
-- Keep documentation up to date. 
+- [Backend API Documentation](backend/BACKEND_API_DOC.md)
+- [Database Migrations Guide](backend/MIGRATIONS.md)
+- [GitHub Actions Workflow](.github/workflows/ci-cd.yml) 

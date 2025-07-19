@@ -15,8 +15,8 @@
     "migrate": "knex migrate:latest",
     "start": "npm run migrate && node src/index.js",
     "dev": "npm run migrate && nodemon src/index.js",
-    "test": "jest --coverage --ci --reporters=default --reporters=jest-junit",
-    "test:api": "newman run todo-backend.postman_collection.json --env-var base_url=http://backend:4000 --reporters cli,junit --reporter-junit-export=./test-results/02-backend-api-junit.xml"
+    "test": "jest --detectOpenHandles --coverage --ci --reporters=default --reporters=jest-junit",
+    "test:api": "newman run todo-backend.postman_collection.json --env-var base_url=http://backend-server-test:4000 --reporters cli,junit --reporter-junit-export=./test-results/02-backend-api-junit.xml"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.7.10",

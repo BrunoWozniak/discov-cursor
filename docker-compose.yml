@@ -11,7 +11,6 @@ services:
       - "3000:3000"
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://backend:4000
     depends_on:
       - backend
     healthcheck:
@@ -19,6 +18,7 @@ services:
       interval: 5s
       timeout: 2s
       retries: 20
+    profiles: ["dev", "e2e"]
   backend:
     image: discov-cursor-backend
     build:
@@ -40,6 +40,7 @@ services:
       interval: 5s
       timeout: 2s
       retries: 20
+    profiles: ["dev", "e2e"]
   backend-test:
     image: discov-cursor-backend-test
     build:
@@ -50,17 +51,35 @@ services:
       - NODE_ENV=test
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    profiles: ["test"]
   frontend-test:
     image: discov-cursor-frontend-test
     build:
       context: ./frontend
       dockerfile: Dockerfile
       target: test
+      args:
+        REACT_APP_API_URL: http://backend-test:4000
     environment:
       - NODE_ENV=test
     depends_on:
-      - backend
+      - backend-test
+    profiles: ["test"]
+  frontend-server-test:
+    image: discov-cursor-frontend-server-test
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod-server
+      args:
+        REACT_APP_API_URL: http://backend-server-test:4000
+    environment:
+      - NODE_ENV=test
+    depends_on:
+      - backend-server-test
+    profiles: ["test"]
   frontend-e2e-test:
     image: discov-cursor-frontend-e2e
     build:
@@ -69,10 +88,10 @@ services:
       target: test-e2e
     environment:
       - NODE_ENV=test
-      - REACT_APP_API_URL=http://backend:4000
     depends_on:
-      - frontend
-      - backend
+      - frontend-server-test
+      - backend-server-test
+    profiles: ["test"]
   backend-api-test:
     image: discov-cursor-backend-api-test
     build:
@@ -82,9 +101,10 @@ services:
     environment:
       - NODE_ENV=test
       - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+      - BASE_URL=http://backend-server-test:4000
     depends_on:
-      - db
-      - backend
+      - backend-server-test
+    profiles: ["test"]
   db:
     image: postgres:15
     restart: always
@@ -95,6 +115,29 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    profiles: ["dev", "test"]
+  backend-server-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: app
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/todos"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    profiles: ["test"]
+
 volumes:
   pgdata: 
   frontend_node_modules:

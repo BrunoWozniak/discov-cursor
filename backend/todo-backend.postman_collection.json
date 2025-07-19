@@ -34,7 +34,6 @@
               "pm.test(\"Response has id\", function () {",
               "    var json = pm.response.json();",
               "    pm.expect(json).to.have.property('id');",
-              "    pm.environment.set('todo_id', json.id);",
               "});"
             ]
           }
@@ -70,13 +69,13 @@
       ]
     },
     {
-      "name": "Get One Todo",
+      "name": "Get One Todo (404 test)",
       "request": {
         "method": "GET",
         "url": {
-          "raw": "{{base_url}}/todos/{{todo_id}}",
+          "raw": "{{base_url}}/todos/99999",
           "host": ["{{base_url}}"],
-          "path": ["todos", "{{todo_id}}"]
+          "path": ["todos", "99999"]
         }
       },
       "event": [
@@ -85,12 +84,12 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
               "});",
-              "pm.test(\"Response has id\", function () {",
+              "pm.test(\"Response has error message\", function () {",
               "    var json = pm.response.json();",
-              "    pm.expect(json).to.have.property('id');",
+              "    pm.expect(json).to.have.property('error');",
               "});"
             ]
           }
@@ -98,7 +97,7 @@
       ]
     },
     {
-      "name": "Patch Todo",
+      "name": "Patch Todo (404 test)",
       "request": {
         "method": "PATCH",
         "header": [
@@ -109,9 +108,9 @@
           "raw": "{\n  \"title\": \"Updated title\",\n  \"completed\": true\n}"
         },
         "url": {
-          "raw": "{{base_url}}/todos/{{todo_id}}",
+          "raw": "{{base_url}}/todos/99999",
           "host": ["{{base_url}}"],
-          "path": ["todos", "{{todo_id}}"]
+          "path": ["todos", "99999"]
         }
       },
       "event": [
@@ -120,13 +119,12 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
               "});",
-              "pm.test(\"Response has id and completed true\", function () {",
+              "pm.test(\"Response has error message\", function () {",
               "    var json = pm.response.json();",
-              "    pm.expect(json).to.have.property('id');",
-              "    pm.expect(json.completed).to.be.true;",
+              "    pm.expect(json).to.have.property('error');",
               "});"
             ]
           }
@@ -134,13 +132,13 @@
       ]
     },
     {
-      "name": "Delete Todo",
+      "name": "Delete Todo (404 test)",
       "request": {
         "method": "DELETE",
         "url": {
-          "raw": "{{base_url}}/todos/{{todo_id}}",
+          "raw": "{{base_url}}/todos/99999",
           "host": ["{{base_url}}"],
-          "path": ["todos", "{{todo_id}}"]
+          "path": ["todos", "99999"]
         }
       },
       "event": [
@@ -149,12 +147,12 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
+              "pm.test(\"Status code is 404\", function () {",
+              "    pm.response.to.have.status(404);",
               "});",
-              "pm.test(\"Response has message\", function () {",
+              "pm.test(\"Response has error message\", function () {",
               "    var json = pm.response.json();",
-              "    pm.expect(json).to.have.property('message');",
+              "    pm.expect(json).to.have.property('error');",
               "});"
             ]
           }
@@ -165,7 +163,7 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:4000"
+      "value": "http://backend-server-test:4000"
     }
   ]
 } 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import App from './App';
 
 beforeEach(() => {
@@ -32,9 +32,9 @@ describe('App', () => {
   });
 
   test('handles fetch error', async () => {
-    window.fetch.mockResolvedValueOnce({ ok: false, json: async () => ({ error: 'fail' }) });
+    window.fetch.mockRejectedValueOnce(new Error('Network error'));
     render(<App />);
-    expect(await screen.findByText(/fail/)).toBeInTheDocument();
+    expect(await screen.findByText(/network error/i)).toBeInTheDocument();
   });
 
   test('can add a todo', async () => {
@@ -43,17 +43,23 @@ describe('App', () => {
       .mockResolvedValueOnce({ ok: true, json: async () => ({ id: 2, title: 'New Todo', completed: false }) }) // add
       .mockResolvedValueOnce({ ok: true, json: async () => [{ id: 2, title: 'New Todo', completed: false }] }); // fetch after add
     render(<App />);
-    fireEvent.change(screen.getByPlaceholderText(/add a new todo/i), { target: { value: 'New Todo' } });
-    fireEvent.click(screen.getByText(/add/i));
+    await act(async () => {
+      fireEvent.change(screen.getByPlaceholderText(/add a new todo/i), { target: { value: 'New Todo' } });
+      fireEvent.click(screen.getByText(/add/i));
+    });
     expect(await screen.findByText('New Todo')).toBeInTheDocument();
   });
 
-  test('can toggle dark mode', () => {
+  test('can toggle dark mode', async () => {
     render(<App />);
     const toggle = screen.getByRole('button', { name: /toggle dark mode/i });
-    fireEvent.click(toggle);
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
     expect(document.body.className).toMatch(/dark-mode/);
-    fireEvent.click(toggle);
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
     expect(document.body.className).toMatch(/light-mode/);
   });
 
@@ -64,9 +70,13 @@ describe('App', () => {
     });
     render(<App />);
     expect(await screen.findByText('Edit Me')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Edit Me'));
+    await act(async () => {
+      fireEvent.click(screen.getByText('Edit Me'));
+    });
     expect(screen.getByDisplayValue('Edit Me')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /cancel/i }));
+    });
     expect(screen.queryByDisplayValue('Edit Me')).not.toBeInTheDocument();
   });
 
@@ -77,8 +87,14 @@ describe('App', () => {
       .mockResolvedValueOnce({ ok: true, json: async () => [] }); // fetch after delete
     render(<App />);
     expect(await screen.findByText('Delete Me')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /delete/i }));
-    fireEvent.click(screen.getByRole('button', { name: /confirm/i }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /delete/i }));
+    });
+    // Wait for modal to appear and click confirm
+    await act(async () => {
+      const confirmButton = await screen.findByRole('button', { name: /confirm/i });
+      fireEvent.click(confirmButton);
+    });
     await waitFor(() => expect(screen.queryByText('Delete Me')).not.toBeInTheDocument());
   });
 }); 

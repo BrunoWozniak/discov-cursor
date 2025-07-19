@@ -12,6 +12,8 @@ build/
 dist/
 frontend/build/
 backend/dist/
+frontend-bundle/
+cypress-screenshots/
 
 # Logs
 *.log

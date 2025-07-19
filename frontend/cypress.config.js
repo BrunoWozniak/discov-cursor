@@ -1,6 +1,6 @@
 module.exports = {
   e2e: {
-    baseUrl: 'http://frontend:3000/discov-cursor',
+    baseUrl: 'http://frontend-server-test:3000/discov-cursor',
     supportFile: false,
     reporter: 'junit',
     reporterOptions: {

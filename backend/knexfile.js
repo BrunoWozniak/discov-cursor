@@ -42,6 +42,11 @@ module.exports = {
     client: 'pg',
     connection,
     migrations: { tableName: 'knex_migrations' }
+  },
+  test: {
+    client: 'pg',
+    connection,
+    migrations: { tableName: 'knex_migrations' }
   }
 
 };

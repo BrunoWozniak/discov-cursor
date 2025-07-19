@@ -33,8 +33,9 @@ function App() {
     try {
       const res = await fetch(`${API_BASE}/todos`);
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || 'Failed to fetch todos');
+        const text = await res.text();
+        console.error('Fetch /todos failed:', text);
+        throw new Error('Failed to fetch todos: ' + text);
       }
       const data = await res.json();
       setTodos(data);

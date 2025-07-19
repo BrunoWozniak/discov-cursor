@@ -6,6 +6,7 @@ RUN npm install --include=dev jest supertest
 RUN npm install --include=dev newman
 RUN npm install --include=dev jest-junit
 RUN mkdir -p /app/test-results /app/coverage
+COPY knexfile.js ./
 COPY . .
 CMD ["npm", "start"] 
 # --- Test stage ---
@@ -21,4 +22,4 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --include=dev knex pg jest supertest newman jest-junit
 COPY . .
-CMD ["npm", "run", "test:api"] 
+CMD ["npx", "newman", "run", "todo-backend.postman_collection.json", "--environment", "postman_environment.json"] 

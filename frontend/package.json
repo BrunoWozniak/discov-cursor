@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/",
+  "homepage": "https://brunowozniak.github.io/discov-cursor",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

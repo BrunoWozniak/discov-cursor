@@ -80,6 +80,14 @@ describe('Todos App', () => {
       expect(Array.isArray(resp.body)).to.be.true;
     });
   });
+
+  it('can reach backend directly via service name', () => {
+    cy.request('GET', 'http://backend:4000/todos').then((resp) => {
+      cy.log('Direct backend /todos response:', JSON.stringify(resp.body));
+      expect(resp.status).to.eq(200);
+      expect(Array.isArray(resp.body)).to.be.true;
+    });
+  });
 });
 
 afterEach(() => {

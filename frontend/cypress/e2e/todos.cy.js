@@ -53,7 +53,7 @@ describe('Todos App', () => {
   it('shows error for too long todo title', () => {
     cy.get('input[placeholder="Add a new todo..."]').type('x'.repeat(81));
     cy.contains('Add').click();
-    cy.contains(/cannot exceed 80 characters/i).should('exist');
+    cy.contains('Title cannot exceed 80 characters').should('exist');
   });
 
   it('can toggle dark mode', () => {
@@ -66,9 +66,24 @@ describe('Todos App', () => {
 
 afterEach(() => {
   // Log all API calls for debugging
-  cy.get('@todosApi.all').then((calls) => {
+  cy.get('@addTodo.all').then((calls) => {
     if (calls && calls.length) {
-      cy.log('Todos API calls:', calls.length);
+      cy.log('Add Todo API calls:', calls.length);
+    }
+  });
+  cy.get('@getTodos.all').then((calls) => {
+    if (calls && calls.length) {
+      cy.log('Get Todos API calls:', calls.length);
+    }
+  });
+  cy.get('@patchTodo.all').then((calls) => {
+    if (calls && calls.length) {
+      cy.log('Patch Todo API calls:', calls.length);
+    }
+  });
+  cy.get('@deleteTodo.all').then((calls) => {
+    if (calls && calls.length) {
+      cy.log('Delete Todo API calls:', calls.length);
     }
   });
 }); 

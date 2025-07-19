@@ -85,7 +85,10 @@ describe('App', () => {
   test('input does not accept more than 80 characters', () => {
     render(<App />);
     const input = screen.getByPlaceholderText(/add a new todo/i);
-    fireEvent.change(input, { target: { value: 'x'.repeat(100) } });
+    // Simulate typing character by character to respect maxLength
+    for (let i = 0; i < 100; i++) {
+      fireEvent.change(input, { target: { value: input.value + 'x' } });
+    }
     expect(input.value.length).toBe(80);
   });
 }); 

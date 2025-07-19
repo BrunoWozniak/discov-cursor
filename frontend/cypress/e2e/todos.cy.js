@@ -11,6 +11,7 @@ describe('Todos App', () => {
   });
 
   it('debug: check what is on the page', () => {
+    cy.url().then(url => cy.log('Current URL: ' + url));
     cy.document().then((doc) => {
       cy.log('Full HTML:', doc.documentElement.outerHTML);
     });

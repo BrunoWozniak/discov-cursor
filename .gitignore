@@ -1,3 +1,50 @@
 # Ignore SSH key files and other secrets
 passphrase
-passphrase.pub 
+passphrase.pub
+
+# Node modules
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Build output
+build/
+dist/
+frontend/build/
+backend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+frontend/.env
+backend/.env
+
+# Test coverage
+coverage/
+frontend/coverage/
+backend/coverage/
+
+# Test results
+test-results/
+frontend/test-results/
+backend/test-results/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+
+# Docker volumes (optional, if you use named volumes)
+pgdata/
+frontend_node_modules/
+backend_node_modules/ 

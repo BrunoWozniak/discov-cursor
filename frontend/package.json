@@ -17,6 +17,7 @@
   "devDependencies": {
     "whatwg-fetch": "^3.6.2"
   },
+  "proxy": "http://backend:4000",
   "jest-junit": {
     "outputDirectory": "./test-results",
     "outputName": "03-frontend-junit.xml",

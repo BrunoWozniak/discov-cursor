@@ -62,6 +62,14 @@ describe('Todos App', () => {
     cy.get('button[aria-label="Toggle dark mode"]').click();
     cy.get('body').should('have.class', 'light-mode');
   });
+
+  it('can reach backend and fetch todos', () => {
+    cy.request('GET', '/todos').then((resp) => {
+      cy.log('Backend /todos response:', JSON.stringify(resp.body));
+      expect(resp.status).to.eq(200);
+      expect(Array.isArray(resp.body)).to.be.true;
+    });
+  });
 });
 
 afterEach(() => {

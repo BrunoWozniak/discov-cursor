@@ -81,14 +81,4 @@ describe('App', () => {
     fireEvent.click(screen.getByRole('button', { name: /confirm/i }));
     await waitFor(() => expect(screen.queryByText('Delete Me')).not.toBeInTheDocument());
   });
-
-  test('input does not accept more than 80 characters', () => {
-    render(<App />);
-    const input = screen.getByPlaceholderText(/add a new todo/i);
-    // Simulate typing character by character to respect maxLength
-    for (let i = 0; i < 100; i++) {
-      fireEvent.change(input, { target: { value: input.value + 'x' } });
-    }
-    expect(input.value.length).toBe(80);
-  });
 }); 

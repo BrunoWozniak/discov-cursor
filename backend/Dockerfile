@@ -22,4 +22,4 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --include=dev knex pg jest supertest newman jest-junit
 COPY . .
-CMD ["npx", "newman", "run", "todo-backend.postman_collection.json", "--environment", "postman_environment.json"] 
+CMD ["sh", "-c", "mkdir -p ./test-results && npx newman run todo-backend.postman_collection.json --environment postman_environment.json --reporters cli,junit --reporter-junit-export=./test-results/02-backend-api-junit.xml"] 

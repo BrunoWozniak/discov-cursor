@@ -27,7 +27,7 @@ docker compose --profile test up
 
 ## 🏗️ Architecture
 
-- **Frontend**: React with Neumorphic UI design
+- **Frontend**: React with modern shadcn/ui components, clean light/dark mode, and Tailwind CSS
 - **Backend**: Express.js REST API
 - **Database**: PostgreSQL with Knex.js migrations
 - **Testing**: Jest (unit), Newman (API), Cypress (E2E)
@@ -56,6 +56,7 @@ discov-cursor/
 2. **API Contract Tests**: Newman/Postman collection
 3. **Frontend Unit Tests**: Jest component tests
 4. **E2E Tests**: Cypress browser automation
+> **Note:** In E2E tests, form submission is triggered directly (not by clicking the Add button) for maximum reliability in containerized/headless environments.
 
 ### Test Isolation
 - Each test type runs in isolated containers

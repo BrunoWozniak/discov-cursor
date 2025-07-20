@@ -15,8 +15,8 @@ afterEach(() => {
 });
 
 describe('App', () => {
-  test('renders main heading', () => {
-    render(<App />);
+  test('renders main heading', async () => {
+    await act(async () => { render(<App />); });
     const heading = screen.getByRole('heading', { name: /todo/i });
     expect(heading).toBeInTheDocument();
   });
@@ -24,16 +24,19 @@ describe('App', () => {
   test('shows loading state and fetches todos', async () => {
     window.fetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => [{ id: 1, title: 'Test Todo', completed: false }],
+      json: async () => {
+        await new Promise(res => setTimeout(res, 10));
+        return [{ id: 1, title: 'Test Todo', completed: false }];
+      },
     });
-    render(<App />);
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    await act(async () => { render(<App />); });
+    expect(screen.queryByText(/loading/i)).toBeInTheDocument();
     expect(await screen.findByText('Test Todo')).toBeInTheDocument();
   });
 
   test('handles fetch error', async () => {
     window.fetch.mockRejectedValueOnce(new Error('Network error'));
-    render(<App />);
+    await act(async () => { render(<App />); });
     expect(await screen.findByText(/network error/i)).toBeInTheDocument();
   });
 
@@ -42,25 +45,25 @@ describe('App', () => {
       .mockResolvedValueOnce({ ok: true, json: async () => [] }) // initial fetch
       .mockResolvedValueOnce({ ok: true, json: async () => ({ id: 2, title: 'New Todo', completed: false }) }) // add
       .mockResolvedValueOnce({ ok: true, json: async () => [{ id: 2, title: 'New Todo', completed: false }] }); // fetch after add
-    render(<App />);
+    await act(async () => { render(<App />); });
     await act(async () => {
       fireEvent.change(screen.getByPlaceholderText(/add a new todo/i), { target: { value: 'New Todo' } });
-      fireEvent.click(screen.getByText(/add/i));
+      fireEvent.click(screen.getByRole('button', { name: /add/i }));
     });
     expect(await screen.findByText('New Todo')).toBeInTheDocument();
   });
 
   test('can toggle dark mode', async () => {
-    render(<App />);
-    const toggle = screen.getByRole('button', { name: /toggle dark mode/i });
+    await act(async () => { render(<App />); });
+    const toggle = screen.getByLabelText(/mode/i);
     await act(async () => {
       fireEvent.click(toggle);
     });
-    expect(document.body.className).toMatch(/dark-mode/);
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
     await act(async () => {
       fireEvent.click(toggle);
     });
-    expect(document.body.className).toMatch(/light-mode/);
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
   });
 
   test('can start and cancel editing a todo', async () => {
@@ -68,10 +71,10 @@ describe('App', () => {
       ok: true,
       json: async () => [{ id: 1, title: 'Edit Me', completed: false }],
     });
-    render(<App />);
+    await act(async () => { render(<App />); });
     expect(await screen.findByText('Edit Me')).toBeInTheDocument();
     await act(async () => {
-      fireEvent.click(screen.getByText('Edit Me'));
+      fireEvent.doubleClick(screen.getByText('Edit Me'));
     });
     expect(screen.getByDisplayValue('Edit Me')).toBeInTheDocument();
     await act(async () => {
@@ -80,21 +83,62 @@ describe('App', () => {
     expect(screen.queryByDisplayValue('Edit Me')).not.toBeInTheDocument();
   });
 
+  test('can save an edited todo', async () => {
+    window.fetch
+      .mockResolvedValueOnce({ ok: true, json: async () => [{ id: 1, title: 'Edit Me', completed: false }] }) // initial fetch
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ id: 1, title: 'Edited Todo', completed: false }) }) // save
+      .mockResolvedValueOnce({ ok: true, json: async () => [{ id: 1, title: 'Edited Todo', completed: false }] }); // fetch after save
+    await act(async () => { render(<App />); });
+    expect(await screen.findByText('Edit Me')).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /edit/i }));
+    });
+    const textareas = screen.getAllByRole('textbox');
+    const editBox = textareas.find(el => el.value === 'Edit Me');
+    expect(editBox).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.change(editBox, { target: { value: 'Edited Todo' } });
+      fireEvent.click(screen.getByRole('button', { name: /save/i }));
+    });
+    expect(await screen.findByText('Edited Todo')).toBeInTheDocument();
+  });
+
   test('can delete a todo', async () => {
     window.fetch
       .mockResolvedValueOnce({ ok: true, json: async () => [{ id: 1, title: 'Delete Me', completed: false }] }) // initial fetch
       .mockResolvedValueOnce({ ok: true, json: async () => ({ message: 'Todo deleted' }) }) // delete
       .mockResolvedValueOnce({ ok: true, json: async () => [] }); // fetch after delete
-    render(<App />);
+    await act(async () => { render(<App />); });
     expect(await screen.findByText('Delete Me')).toBeInTheDocument();
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /delete/i }));
     });
-    // Wait for modal to appear and click confirm
     await act(async () => {
-      const confirmButton = await screen.findByRole('button', { name: /confirm/i });
-      fireEvent.click(confirmButton);
+      const confirmButton = await screen.findAllByRole('button', { name: /delete/i });
+      fireEvent.click(confirmButton[confirmButton.length - 1]);
     });
     await waitFor(() => expect(screen.queryByText('Delete Me')).not.toBeInTheDocument());
+  });
+
+  test('can filter todos', async () => {
+    window.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        { id: 1, title: 'Active Todo', completed: false },
+        { id: 2, title: 'Completed Todo', completed: true },
+      ],
+    });
+    await act(async () => { render(<App />); });
+    expect(await screen.findByText('Active Todo')).toBeInTheDocument();
+    expect(await screen.findByText('Completed Todo')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /active/i }));
+    expect(screen.getByText('Active Todo')).toBeInTheDocument();
+    expect(screen.queryByText('Completed Todo')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /completed/i }));
+    expect(screen.getByText('Completed Todo')).toBeInTheDocument();
+    expect(screen.queryByText('Active Todo')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /^all$/i }));
+    expect(screen.getByText('Active Todo')).toBeInTheDocument();
+    expect(screen.getByText('Completed Todo')).toBeInTheDocument();
   });
 }); 

@@ -16,6 +16,12 @@ process.on('unhandledRejection', err => {
 
 app.use(express.json());
 
+// Log all incoming requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // PostgreSQL connection setup
 let pool;
 try {

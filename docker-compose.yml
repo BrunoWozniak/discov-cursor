@@ -67,6 +67,9 @@ services:
     depends_on:
       - backend-test
     profiles: ["test"]
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
   frontend-server-test:
     image: discov-cursor-frontend-server-test
     build:
@@ -93,6 +96,9 @@ services:
       - frontend-server-test
       - backend-server-test
     profiles: ["test"]
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
   backend-api-test:
     image: discov-cursor-backend-api-test
     build:

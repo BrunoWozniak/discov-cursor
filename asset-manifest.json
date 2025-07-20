@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/discov-cursor/static/css/main.d783b893.css",
-    "main.js": "/discov-cursor/static/js/main.420392fc.js",
+    "main.css": "/discov-cursor/static/css/main.b146f6f5.css",
+    "main.js": "/discov-cursor/static/js/main.7df2abbb.js",
     "index.html": "/discov-cursor/index.html",
-    "main.d783b893.css.map": "/discov-cursor/static/css/main.d783b893.css.map",
-    "main.420392fc.js.map": "/discov-cursor/static/js/main.420392fc.js.map"
+    "main.b146f6f5.css.map": "/discov-cursor/static/css/main.b146f6f5.css.map",
+    "main.7df2abbb.js.map": "/discov-cursor/static/js/main.7df2abbb.js.map"
   },
   "entrypoints": [
-    "static/css/main.d783b893.css",
-    "static/js/main.420392fc.js"
+    "static/css/main.b146f6f5.css",
+    "static/js/main.7df2abbb.js"
   ]
 }
